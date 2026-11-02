@@ -5,6 +5,16 @@ FastAPI Application for ClimateGuard AI.
 Bilingual (Tamil/English) Climate Early-Warning Agent for Tamil Nadu Farmers.
 """
 
+import sys
+import os
+
+# Ensure both backend and project root directory are on sys.path
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(CURRENT_DIR)
+for _p in (CURRENT_DIR, PARENT_DIR):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -28,7 +38,7 @@ app = FastAPI(
 # Enable CORS for frontend development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,6 +60,7 @@ def startup_event():
 
 
 @app.get("/health")
+@app.get("/api/health")
 def health_check():
     return {
         "status": "healthy",

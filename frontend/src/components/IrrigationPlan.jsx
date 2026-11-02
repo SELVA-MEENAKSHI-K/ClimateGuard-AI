@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -119,7 +120,7 @@ export const IrrigationPlan = ({ profile }) => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:8000/api/irrigation?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}`
+          `${API_BASE_URL}/api/irrigation?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}`
         );
         if (res.ok) {
           const data = await res.json();

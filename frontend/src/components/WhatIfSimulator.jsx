@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -32,7 +33,7 @@ export const WhatIfSimulator = ({ profile }) => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:8000/api/whatif?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}&dry_days_added=${dry}&temp_increase=${temp}`
+          `${API_BASE_URL}/api/whatif?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}&dry_days_added=${dry}&temp_increase=${temp}`
         );
         if (res.ok) {
           const data = await res.json();

@@ -12,6 +12,7 @@ const translations = {
 export const LanguageProvider = ({ children }) => {
   // Default to Tamil (ta) per requirements
   const [lang, setLang] = useState(() => {
+    if (typeof window !== 'undefined') { const p = new URLSearchParams(window.location.search).get('lang'); if (p && (p === 'ta' || p === 'en')) return p; }
     return localStorage.getItem('climateguard_lang') || 'ta';
   });
 

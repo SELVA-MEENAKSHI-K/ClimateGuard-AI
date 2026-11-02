@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import {
@@ -25,7 +26,7 @@ export const NearbyHelp = ({ profile }) => {
     const fetchPlaces = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:8000/api/help-places?district=${district}`);
+        const res = await fetch(`${API_BASE_URL}/api/help-places?district=${district}`);
         if (res.ok) {
           const data = await res.json();
           if (isMounted) setPlacesData(data);

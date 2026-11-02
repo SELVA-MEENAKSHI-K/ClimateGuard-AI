@@ -21,7 +21,14 @@ async function sendCdp(ws, method, params = {}) {
   });
 }
 
-async function capture(url, outPaths, metrics) {
+async function capture(url, filename, metrics) {
+  const artifactDir = 'C:\\Users\\kanna\\.gemini\\antigravity\\brain\\16178239-8b89-4c2e-a3bc-0a4b1dd22ae2';
+  const workspaceDir = 'C:\\Users\\kanna\\Downloads\\whether';
+  const outPaths = [
+    path.join(artifactDir, filename),
+    path.join(workspaceDir, filename)
+  ];
+
   // 1. Create target
   const newTargetRes = await fetch('http://127.0.0.1:9222/json/new?' + encodeURIComponent(url), { method: 'PUT' });
   const target = await newTargetRes.json();
@@ -37,74 +44,57 @@ async function capture(url, outPaths, metrics) {
 
   // Navigate and wait for render
   await sendCdp(ws, 'Page.navigate', { url });
-  await new Promise((r) => setTimeout(r, 3500));
+  await new Promise((r) => setTimeout(r, 3000));
 
   const { data } = await sendCdp(ws, 'Page.captureScreenshot', { format: 'png' });
   const buffer = Buffer.from(data, 'base64');
   for (const outPath of outPaths) {
     fs.writeFileSync(outPath, buffer);
-    console.log(`Saved screenshot to ${outPath} (${buffer.length} bytes)`);
   }
+  console.log(`Saved ${filename} (${buffer.length} bytes)`);
 
   ws.close();
-  // Close target
   try {
     await fetch('http://127.0.0.1:9222/json/close/' + target.id);
   } catch (e) {}
 }
 
 async function main() {
-  const artifactDir = 'C:\\Users\\kanna\\.gemini\\antigravity\\brain\\16178239-8b89-4c2e-a3bc-0a4b1dd22ae2';
-  const workspaceDir = 'C:\\Users\\kanna\\Downloads\\whether';
+  const desktop = { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false };
+  const mobile = { width: 390, height: 844, deviceScaleFactor: 2, mobile: true };
 
-  console.log('1. Capturing Home at 1440px...');
-  await capture('http://127.0.0.1:5173/#home', [
-    path.join(artifactDir, 'home_1440.png'),
-    path.join(workspaceDir, 'home_1440.png')
-  ], {
-    width: 1440,
-    height: 900,
-    deviceScaleFactor: 1,
-    mobile: false
-  });
+  const baseUrl = 'http://127.0.0.1:5173';
 
-  console.log('2. Capturing Home at 390px (Mobile)...');
-  await capture('http://127.0.0.1:5173/#home', [
-    path.join(artifactDir, 'home_390.png'),
-    path.join(workspaceDir, 'home_390.png')
-  ], {
-    width: 390,
-    height: 844,
-    deviceScaleFactor: 2,
-    mobile: true
-  });
+  console.log('Capturing Landing Page screenshots...');
+  // 1. Landing - Low
+  await capture(`${baseUrl}/?hazard=low&lang=ta#landing`, 'landing_low_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=low&lang=ta#landing`, 'landing_low_390.png', mobile);
 
-  console.log('3. Capturing Irrigation at 1440px...');
-  await capture('http://127.0.0.1:5173/#irrigation', [
-    path.join(artifactDir, 'irrigation_1440.png'),
-    path.join(workspaceDir, 'irrigation_1440.png')
-  ], {
-    width: 1440,
-    height: 900,
-    deviceScaleFactor: 1,
-    mobile: false
-  });
+  // 2. Landing - Heat
+  await capture(`${baseUrl}/?hazard=heat&lang=ta#landing`, 'landing_heat_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=heat&lang=ta#landing`, 'landing_heat_390.png', mobile);
 
-  console.log('4. Capturing Irrigation at 390px (Mobile)...');
-  await capture('http://127.0.0.1:5173/#irrigation', [
-    path.join(artifactDir, 'irrigation_390.png'),
-    path.join(workspaceDir, 'irrigation_390.png')
-  ], {
-    width: 390,
-    height: 844,
-    deviceScaleFactor: 2,
-    mobile: true
-  });
+  // 3. Landing - Rain
+  await capture(`${baseUrl}/?hazard=rain&lang=ta#landing`, 'landing_rain_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=rain&lang=ta#landing`, 'landing_rain_390.png', mobile);
 
-  console.log('All screenshots captured successfully!');
+  console.log('Capturing Dashboard Hero screenshots...');
+  // 4. Dashboard - Low
+  await capture(`${baseUrl}/?hazard=low&lang=ta#home`, 'dashboard_low_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=low&lang=ta#home`, 'dashboard_low_390.png', mobile);
+
+  // 5. Dashboard - Heat
+  await capture(`${baseUrl}/?hazard=heat&lang=ta#home`, 'dashboard_heat_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=heat&lang=ta#home`, 'dashboard_heat_390.png', mobile);
+
+  // 6. Dashboard - Rain
+  await capture(`${baseUrl}/?hazard=rain&lang=ta#home`, 'dashboard_rain_1440.png', desktop);
+  await capture(`${baseUrl}/?hazard=rain&lang=ta#home`, 'dashboard_rain_390.png', mobile);
+
+  console.log('All 12 screenshots captured successfully!');
 }
 
-main().catch(err => {
-  console.error('Error during capture:', err);
+main().catch((err) => {
+  console.error('Capture error:', err);
   process.exit(1);
 });

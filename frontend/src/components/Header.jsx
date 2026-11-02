@@ -62,7 +62,7 @@ export const Header = ({
           <div className="flex items-center justify-between gap-2 sm:gap-4">
             {/* Left: Brand Logo + App Name */}
             <div
-              onClick={() => setActiveTab('home')}
+              onClick={() => setActiveTab('landing')}
               className="flex items-center gap-2 cursor-pointer select-none min-w-0 shrink-0"
             >
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-agri-600 dark:bg-agri-600 text-white flex items-center justify-center shadow-md shadow-agri-200 dark:shadow-none transition-transform hover:scale-105 active:scale-95 shrink-0">

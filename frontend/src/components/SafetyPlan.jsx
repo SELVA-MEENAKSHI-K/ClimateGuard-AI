@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -32,7 +33,7 @@ export const SafetyPlan = () => {
     const fetchSafety = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:8000/api/safety-plan');
+        const res = await fetch(`${API_BASE_URL}/api/safety-plan`);
         if (res.ok) {
           const data = await res.json();
           if (isMounted) setSafetyData(data);

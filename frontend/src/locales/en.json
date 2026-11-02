@@ -411,5 +411,14 @@
     "stop": "Stop",
     "playing": "Playing Audio...",
     "unsupported": "Voice synthesis not supported in this browser"
+  },
+  "landing": {
+    "getStarted": "Get Started",
+    "featIrrigation": "Smart Irrigation Planning",
+    "featIrrigationDesc": "Deterministic 7-day schedule computed from Open-Meteo ET0 and rainfall.",
+    "featWarning": "Early Climate Warnings",
+    "featWarningDesc": "Threshold-based heat, heavy rain, drought, and wind hazard assessment.",
+    "featAgent": "Bilingual Agro Agent",
+    "featAgentDesc": "Actionable advice in Tamil and English powered by localized agromet knowledge."
   }
 }

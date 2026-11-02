@@ -1,10 +1,12 @@
+import { API_BASE_URL } from './config';
 import React, { useState, useEffect, useCallback } from 'react';
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Header } from './components/Header';
 import { LocationCropSelector } from './components/LocationCropSelector';
-import { HeroContainer } from './components/HeroContainer';
+import { DashboardRiskHeroCard } from './components/DashboardRiskHeroCard';
+import { LandingPage } from './components/LandingPage';
 import { RiskOverview } from './components/RiskOverview';
 import { FarmBriefCard } from './components/FarmBriefCard';
 import { WeatherSummary } from './components/WeatherSummary';
@@ -151,13 +153,38 @@ function MainApp() {
   const [chatLoading, setChatLoading] = useState(false);
   const [latestTrace, setLatestTrace] = useState(null);
 
+  // Determine current top hazard (supports URL ?hazard=low|heat|rain|drought|wind for testing/screenshots)
+  const getTopHazard = () => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search).get('hazard');
+      if (p && ['low', 'heat', 'rain', 'drought', 'wind'].includes(p.toLowerCase())) {
+        return p.toLowerCase();
+      }
+    }
+    if (!riskData) return 'low';
+    const { rain_risk, heat_risk, drought_risk, wind_risk, composite_risk } = riskData;
+    if (heat_risk === 'CRITICAL' || heat_risk === 'HIGH') return 'heat';
+    if (rain_risk === 'CRITICAL' || rain_risk === 'HIGH') return 'rain';
+    if (drought_risk === 'CRITICAL' || drought_risk === 'HIGH') return 'drought';
+    if (wind_risk === 'CRITICAL' || wind_risk === 'HIGH') return 'wind';
+    if (composite_risk === 'MODERATE') {
+      if (heat_risk === 'MODERATE') return 'heat';
+      if (rain_risk === 'MODERATE') return 'rain';
+      if (drought_risk === 'MODERATE') return 'drought';
+      if (wind_risk === 'MODERATE') return 'wind';
+    }
+    return 'low';
+  };
+
+  const currentHazard = getTopHazard();
+
   const shouldReduceMotion = useReducedMotion();
 
   // Fetch full weather + risk + advisory from backend
   const fetchAgroWeather = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/weather?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}`);
+      const res = await fetch(`${API_BASE_URL}/api/weather?district=${profile.district}&crop=${profile.crop}&growth_stage=${profile.growth_stage}`);
       if (res.ok) {
         const data = await res.json();
         if (data.weather) setWeatherData(data.weather);
@@ -192,7 +219,7 @@ function MainApp() {
     setChatLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat', {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -289,43 +316,43 @@ function MainApp() {
                 }
               />
 
-              {/* 2. Hero Decision Card for Today's Farm Action */}
-              <HeroDecisionCard
-                badge={lang === 'ta' ? (farmBrief.top_risk_ta || farmBrief.top_risk) : (farmBrief.top_risk || farmBrief.top_risk_ta)}
-                decision={
-                  lang === 'ta'
-                    ? (farmBrief.action_today_ta || farmBrief.action_today_en || '').replace(/paddy/gi, 'நெல்').replace(/banana/gi, 'வாழை')
-                    : (farmBrief.action_today_en || farmBrief.action_today_ta)
+              {/* 2. Hero Decision Card: Today's Risk with WeatherScene Background Strip */}
+              <DashboardRiskHeroCard
+                hazard={currentHazard}
+                riskLevel={riskData.composite_risk}
+                statusBadgeText={
+                  currentHazard === 'heat'
+                    ? (lang === 'ta' ? 'கடும் வெப்ப எச்சரிக்கை' : 'Extreme Heat Warning')
+                    : currentHazard === 'rain'
+                    ? (lang === 'ta' ? 'கனமழை எச்சரிக்கை' : 'Heavy Rain Warning')
+                    : currentHazard === 'drought'
+                    ? (lang === 'ta' ? 'வறட்சி எச்சரிக்கை' : 'Drought Alert')
+                    : (lang === 'ta' ? (farmBrief.top_risk_ta || 'குறைந்த இடர் / சாதகமானது') : (farmBrief.top_risk || 'Low Risk / Favorable'))
                 }
-                reason={
-                  lang === 'ta'
-                    ? `தவிர்க்க: ${(farmBrief.avoid_today_ta || farmBrief.avoid_today_en || '').replace(/paddy/gi, 'நெல்')}`
-                    : `Avoid: ${farmBrief.avoid_today_en || farmBrief.avoid_today_ta}`
+                actionTitle={
+                  currentHazard === 'heat'
+                    ? (lang === 'ta' ? 'மதிய வேளையில் பாசனம் செய்வதை தவிர்க்கவும்' : 'Avoid Midday Irrigation & Protect Crops')
+                    : currentHazard === 'rain'
+                    ? (lang === 'ta' ? 'வடிகால் வாய்க்கால்களை உடனடியாக தயார் செய்யவும்' : 'Clear Field Drainage Channels Immediately')
+                    : currentHazard === 'drought'
+                    ? (lang === 'ta' ? 'ஈரப்பதத்தை காக்க நிலப்போர்வை அமைக்கவும்' : 'Apply Mulching to Conserve Soil Moisture')
+                    : (lang === 'ta'
+                        ? (farmBrief.action_today_ta || farmBrief.action_today_en || '').replace(/paddy/gi, 'நெல்').replace(/banana/gi, 'வாழை')
+                        : (farmBrief.action_today_en || farmBrief.action_today_ta))
                 }
-                colorAccent={riskData.composite_risk === 'LOW' ? 'emerald' : riskData.composite_risk === 'MODERATE' ? 'amber' : 'rose'}
-                icon={Sprout}
-                extraDetails={
-                  <div className="bg-white/90 dark:bg-slate-900/90 px-4 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 text-center shadow-xs">
-                    <span className="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">
-                      {t('spray.title')}
-                    </span>
-                    <span className={`text-xs sm:text-sm font-bold ${
-                      sprayWindow?.status === 'SAFE'
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : sprayWindow?.status === 'CAUTION'
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-rose-600 dark:text-rose-400'
-                    }`}>
-                      {sprayWindow?.status === 'SAFE'
-                        ? t('spray.safeShort')
-                        : sprayWindow?.status === 'CAUTION'
-                        ? t('spray.cautionShort')
-                        : sprayWindow?.status === 'UNSAFE'
-                        ? t('spray.unsafeShort')
-                        : t('spray.safeShort')}
-                    </span>
-                  </div>
+                avoidAdvice={
+                  currentHazard === 'heat'
+                    ? (lang === 'ta' ? 'அதிக நண்பகல் வெயிலில் உரமிடுவதை மற்றும் தெளிப்பை.' : 'Midday foliar spraying and nitrogen application in peak heat.')
+                    : currentHazard === 'rain'
+                    ? (lang === 'ta' ? 'மழைக்கு முன் உரம் அல்லது பூச்சிக்கொல்லி தெளிப்பதை.' : 'Fertilizer or chemical application prior to downpour.')
+                    : (lang === 'ta'
+                        ? (farmBrief.avoid_today_ta || farmBrief.avoid_today_en || '').replace(/paddy/gi, 'நெல்')
+                        : (farmBrief.avoid_today_en || farmBrief.avoid_today_ta))
                 }
+                sprayWindow={sprayWindow}
+                district={profile.district}
+                crop={profile.crop}
+                growthStage={profile.growth_stage}
               />
 
               {/* 3. 12-Column Grid Layout */}
@@ -340,13 +367,8 @@ function MainApp() {
                   />
                 </div>
 
-                {/* 3D Hero Scene (6 cols on lg) */}
-                <div className="col-span-12 lg:col-span-6">
-                  <HeroContainer riskData={riskData} />
-                </div>
-
-                {/* Risk Overview Gauges (6 cols on lg) */}
-                <div className="col-span-12 lg:col-span-6">
+                {/* Risk Overview Gauges (12 cols) */}
+                <div className="col-span-12">
                   <RiskOverview riskData={riskData} />
                 </div>
 
@@ -477,6 +499,22 @@ function MainApp() {
               <AboutView />
             </motion.div>
           )}
+          {/* Landing Page View */}
+          {activeTab === 'landing' && (
+            <motion.div
+              key="landing"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <LandingPage
+                hazard={currentHazard}
+                onGetStarted={() => setActiveTab('home')}
+              />
+            </motion.div>
+          )}
+
         </AnimatePresence>
       </main>
 
