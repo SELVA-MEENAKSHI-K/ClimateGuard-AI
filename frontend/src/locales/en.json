@@ -116,7 +116,10 @@
     "crop": "Target Crop",
     "stage": "Growth Stage",
     "theme": "Theme (Appearance)",
-    "close": "Save & Close"
+    "close": "Save & Close",
+    "motionTitle": "Motion & Animations",
+    "reduceMotion": "Reduce Motion",
+    "reduceMotionDesc": "Minimize UI animations, parallax, and transitions"
   },
   "theme": {
     "toggle": "Toggle Theme",

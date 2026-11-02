@@ -1,13 +1,15 @@
 import React from 'react';
 import { useTranslation } from '../context/LanguageContext';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useMotion } from '../context/MotionContext';
+import { motion } from 'framer-motion';
 import { AlertTriangle, Flame, CloudRain, Sun, Wind } from 'lucide-react';
 import { TiltCard } from './TiltCard';
 import { CountUp } from './CountUp';
+import { containerStagger, cardFadeUp, badgePopIn } from '../utils/motion';
 
 export const RiskOverview = ({ riskData }) => {
   const { t } = useTranslation();
-  const shouldReduceMotion = useReducedMotion();
+  const { shouldReduceMotion } = useMotion();
 
   if (!riskData) return null;
 
@@ -121,22 +123,6 @@ export const RiskOverview = ({ riskData }) => {
     },
   ];
 
-  // Stagger animation container
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.08
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } }
-  };
-
   return (
     <section className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5 mb-5 theme-transition">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -154,12 +140,15 @@ export const RiskOverview = ({ riskData }) => {
         <div className="flex flex-col sm:items-end gap-1.5 w-full sm:w-auto">
           <div className={`inline-flex flex-wrap items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold shadow-sm ${compositeStyles.bg} ${compositeStyles.border} max-w-full`}>
             <span className="truncate">{t('risk.compositeRisk')}:</span>
-            <span className={`px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-extrabold uppercase shrink-0 ${compositeStyles.badge}`}>
+            <motion.span
+              {...badgePopIn(0.1, shouldReduceMotion)}
+              className={`px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-extrabold uppercase shrink-0 ${compositeStyles.badge}`}
+            >
               {t(`risk.levels.${riskData.composite_risk || 'LOW'}`)}
-            </span>
+            </motion.span>
           </div>
 
-          {/* Animated Gauge Fill Bar */}
+          {/* Animated Gauge Fill Bar (Composite) */}
           <div className="w-full sm:w-44 bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden flex border border-slate-200/60 dark:border-slate-700">
             <motion.div
               className={`h-full rounded-full ${compositeStyles.gaugeColor}`}
@@ -168,7 +157,7 @@ export const RiskOverview = ({ riskData }) => {
               transition={
                 shouldReduceMotion
                   ? { duration: 0 }
-                  : { type: 'spring', stiffness: 50, damping: 14 }
+                  : { duration: 0.65, ease: [0.25, 0.1, 0.25, 1.0] }
               }
             />
           </div>
@@ -177,21 +166,26 @@ export const RiskOverview = ({ riskData }) => {
 
       {/* 4 Deterministic Risk Cards with 3D Tilt & Count-Up Numbers */}
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
+        variants={containerStagger(0.08, shouldReduceMotion)}
+        initial="initial"
+        animate="animate"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5"
       >
-        {riskCards.map((card) => {
+        {riskCards.map((card, idx) => {
           const styles = getRiskColor(card.level);
           const confStyles = getConfidenceStyle(card.confidence);
           const IconComponent = card.icon;
 
           return (
-            <motion.div key={card.key} variants={itemVariants}>
+            <motion.div
+              key={card.key}
+              variants={cardFadeUp(shouldReduceMotion)}
+              whileHover={shouldReduceMotion ? {} : { y: -3, transition: { duration: 0.2 } }}
+              className="h-full"
+            >
               <TiltCard
-                className={`rounded-xl border p-4 flex flex-col justify-between h-full shadow-sm ${styles.bg} ${styles.border}`}
-                maxTilt={7}
+                className={`rounded-xl border p-4 flex flex-col justify-between h-full shadow-sm hover:shadow-md transition-shadow ${styles.bg} ${styles.border}`}
+                maxTilt={6}
               >
                 <div>
                   <div className="flex items-center justify-between gap-1.5 mb-2">
@@ -199,9 +193,12 @@ export const RiskOverview = ({ riskData }) => {
                       <IconComponent className={`w-4 h-4 ${styles.iconColor} shrink-0`} />
                       <span className="truncate">{card.title}</span>
                     </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs shrink-0 whitespace-nowrap ${styles.badge}`}>
+                    <motion.span
+                      {...badgePopIn(0.1 + idx * 0.05, shouldReduceMotion)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs shrink-0 whitespace-nowrap ${styles.badge}`}
+                    >
                       {t(`risk.levels.${card.level || 'LOW'}`)}
-                    </span>
+                    </motion.span>
                   </div>
 
                   {/* Animated Count-up Metric */}
@@ -210,7 +207,21 @@ export const RiskOverview = ({ riskData }) => {
                       value={card.numValue}
                       decimals={card.decimals}
                       suffix={card.suffix}
-                      duration={0.9}
+                      duration={0.8}
+                    />
+                  </div>
+
+                  {/* Individual Gauge Fill Bar */}
+                  <div className="w-full bg-slate-200/60 dark:bg-slate-700/60 rounded-full h-1.5 overflow-hidden my-2">
+                    <motion.div
+                      className={`h-full rounded-full ${styles.gaugeColor}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${styles.gaugePercent}%` }}
+                      transition={
+                        shouldReduceMotion
+                          ? { duration: 0 }
+                          : { duration: 0.55, ease: [0.25, 0.1, 0.25, 1.0], delay: 0.15 + idx * 0.06 }
+                      }
                     />
                   </div>
 
@@ -247,3 +258,5 @@ export const RiskOverview = ({ riskData }) => {
     </section>
   );
 };
+
+export default RiskOverview;

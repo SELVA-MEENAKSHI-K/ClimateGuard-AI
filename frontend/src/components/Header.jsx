@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
+import { useMotion } from '../context/MotionContext';
+import { motion } from 'framer-motion';
 import {
   ShieldAlert,
   Globe,
@@ -25,6 +27,7 @@ export const Header = ({
 }) => {
   const { lang, setLang, t } = useTranslation();
   const { toggleTheme, isDark } = useTheme();
+  const { shouldReduceMotion } = useMotion();
   const [showImdBanner, setShowImdBanner] = useState(true);
 
   // Exactly 5 main navigation links (Max 2 words in Tamil)

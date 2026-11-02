@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { X, Globe, MapPin, Sprout, Clock, Sun, Moon, Users, Check } from 'lucide-react';
+import { useMotion } from '../context/MotionContext';
+import { X, Globe, MapPin, Sprout, Clock, Sun, Moon, Users, Check, Sparkles } from 'lucide-react';
 
 const DISTRICTS = [
   'Madurai',
@@ -47,6 +48,7 @@ export const SettingsModal = ({
 }) => {
   const { lang, setLang, t } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
+  const { reduceMotion, toggleReduceMotion } = useMotion();
 
   if (!isOpen) return null;
 

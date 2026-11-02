@@ -1,7 +1,69 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Sparkles, Volume2, VolumeX, AlertCircle, Wind, Droplet, Check } from 'lucide-react';
+import { Sparkles, Volume2, VolumeX, AlertCircle, Wind, Droplet } from 'lucide-react';
+
+const ChecklistItem = ({ taskId, isDone, onToggle, text, shouldReduceMotion }) => {
+  return (
+    <li
+      onClick={() => onToggle(taskId)}
+      className={`cursor-pointer flex items-start gap-2.5 p-2 rounded-lg text-xs sm:text-sm transition-colors select-none ${
+        isDone
+          ? 'bg-emerald-50/70 dark:bg-emerald-950/30'
+          : 'hover:bg-white dark:hover:bg-slate-800'
+      }`}
+    >
+      <motion.div
+        animate={
+          shouldReduceMotion
+            ? {}
+            : isDone
+            ? { scale: [1, 1.2, 1] }
+            : { scale: 1 }
+        }
+        transition={{ duration: 0.25 }}
+        className={`w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center border transition-colors ${
+          isDone
+            ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
+        }`}
+      >
+        {isDone && (
+          <svg
+            className="w-3 h-3 text-white"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <motion.path
+              d="M3.5 8.5L6.5 11.5L12.5 4.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1.0] }}
+            />
+          </svg>
+        )}
+      </motion.div>
+      <motion.span
+        animate={{
+          opacity: isDone ? 0.45 : 1,
+        }}
+        transition={{ duration: 0.25 }}
+        className={`transition-all ${
+          isDone
+            ? 'line-through text-slate-400 dark:text-slate-500'
+            : 'text-slate-800 dark:text-slate-200'
+        }`}
+      >
+        {text}
+      </motion.span>
+    </li>
+  );
+};
 
 export const AdvisoryCard = ({ advisory, checklist, sprayWindow }) => {
   const { t, lang, tamilVoiceAvailable, isPlayingAudio, speakText, stopSpeech } = useTranslation();
@@ -140,34 +202,14 @@ export const AdvisoryCard = ({ advisory, checklist, sprayWindow }) => {
                   const isDone = !!completedTasks[taskId];
                   const text = lang === 'ta' ? (item.action_ta || item.action) : item.action;
                   return (
-                    <li
+                    <ChecklistItem
                       key={taskId}
-                      onClick={() => toggleTask(taskId)}
-                      className={`cursor-pointer flex items-start gap-2.5 p-2 rounded-lg text-xs sm:text-sm transition-all select-none ${
-                        isDone
-                          ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-slate-400 dark:text-slate-500 line-through'
-                          : 'hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      <motion.div
-                        animate={
-                          shouldReduceMotion
-                            ? {}
-                            : isDone
-                            ? { scale: [1, 1.25, 1], rotate: [0, -8, 0] }
-                            : { scale: 1 }
-                        }
-                        transition={{ duration: 0.25 }}
-                        className={`w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center border transition-colors ${
-                          isDone
-                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
-                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
-                        }`}
-                      >
-                        {isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                      </motion.div>
-                      <span>{text}</span>
-                    </li>
+                      taskId={taskId}
+                      isDone={isDone}
+                      onToggle={toggleTask}
+                      text={text}
+                      shouldReduceMotion={shouldReduceMotion}
+                    />
                   );
                 })}
               </ul>
@@ -191,34 +233,14 @@ export const AdvisoryCard = ({ advisory, checklist, sprayWindow }) => {
                   const isDone = !!completedTasks[taskId];
                   const text = lang === 'ta' ? (item.action_ta || item.action) : item.action;
                   return (
-                    <li
+                    <ChecklistItem
                       key={taskId}
-                      onClick={() => toggleTask(taskId)}
-                      className={`cursor-pointer flex items-start gap-2.5 p-2 rounded-lg text-xs sm:text-sm transition-all select-none ${
-                        isDone
-                          ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-slate-400 dark:text-slate-500 line-through'
-                          : 'hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      <motion.div
-                        animate={
-                          shouldReduceMotion
-                            ? {}
-                            : isDone
-                            ? { scale: [1, 1.25, 1], rotate: [0, -8, 0] }
-                            : { scale: 1 }
-                        }
-                        transition={{ duration: 0.25 }}
-                        className={`w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center border transition-colors ${
-                          isDone
-                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
-                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
-                        }`}
-                      >
-                        {isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                      </motion.div>
-                      <span>{text}</span>
-                    </li>
+                      taskId={taskId}
+                      isDone={isDone}
+                      onToggle={toggleTask}
+                      text={text}
+                      shouldReduceMotion={shouldReduceMotion}
+                    />
                   );
                 })}
               </ul>
@@ -242,34 +264,14 @@ export const AdvisoryCard = ({ advisory, checklist, sprayWindow }) => {
                   const isDone = !!completedTasks[taskId];
                   const text = lang === 'ta' ? (item.action_ta || item.action) : item.action;
                   return (
-                    <li
+                    <ChecklistItem
                       key={taskId}
-                      onClick={() => toggleTask(taskId)}
-                      className={`cursor-pointer flex items-start gap-2.5 p-2 rounded-lg text-xs sm:text-sm transition-all select-none ${
-                        isDone
-                          ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-slate-400 dark:text-slate-500 line-through'
-                          : 'hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      <motion.div
-                        animate={
-                          shouldReduceMotion
-                            ? {}
-                            : isDone
-                            ? { scale: [1, 1.25, 1], rotate: [0, -8, 0] }
-                            : { scale: 1 }
-                        }
-                        transition={{ duration: 0.25 }}
-                        className={`w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center border transition-colors ${
-                          isDone
-                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
-                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
-                        }`}
-                      >
-                        {isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                      </motion.div>
-                      <span>{text}</span>
-                    </li>
+                      taskId={taskId}
+                      isDone={isDone}
+                      onToggle={toggleTask}
+                      text={text}
+                      shouldReduceMotion={shouldReduceMotion}
+                    />
                   );
                 })}
               </ul>

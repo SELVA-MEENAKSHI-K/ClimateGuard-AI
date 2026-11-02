@@ -2,7 +2,9 @@ import { API_BASE_URL } from './config';
 import React, { useState, useEffect, useCallback } from 'react';
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MotionProvider, useMotion } from './context/MotionContext';
+import { pageVariants } from './utils/motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Header } from './components/Header';
 import { LocationCropSelector } from './components/LocationCropSelector';
 import { DashboardRiskHeroCard } from './components/DashboardRiskHeroCard';
@@ -101,6 +103,29 @@ const INITIAL_SPRAY = {
   reason_ta: "காற்றின் வேகம் 15 கி.மீ/மணிக்கு குறைவாகவும் மழை வாய்ப்பு குறைவாகவும் உள்ளதால் தெளிப்புக்கு உகந்தது."
 };
 
+const INITIAL_TRACE = {
+  orchestrator: 'ClimateGuardOrchestrator',
+  provider: 'gemini',
+  mode: 'live_strands',
+  is_mock: false,
+  tool_calls: [
+    { tool: 'get_weather_forecast', arguments: { district: 'Madurai', days: 7 } },
+    { tool: 'evaluate_agromet_thresholds', arguments: { crop: 'paddy', stage: 'vegetative' } },
+    { tool: 'calculate_irrigation_demand', arguments: { et0_total: 27.8, forecast_rain: 28.3 } }
+  ]
+};
+
+const INITIAL_MESSAGES = [
+  {
+    role: 'user',
+    text: 'இன்று மருந்து தெளிக்க உகந்த நேரமா? (Is it safe to spray today?)'
+  },
+  {
+    role: 'assistant',
+    text: 'மதுரை மாவட்டத்தில் காற்றின் வேகம் 14 கி.மீ/ம மற்றும் குறைந்த மழை வாய்ப்பு உள்ளதால், இன்று காலை 6:00 முதல் 9:00 மணி வரை இலைவழி ஊட்டச்சத்து தெளிக்க உகந்தது.\n\nWind speed in Madurai is 14 km/h with low rain probability. Optimal foliar spray window is between 6:00 AM and 9:00 AM today.'
+  }
+];
+
 function MainApp() {
   const { lang, t } = useTranslation();
   const [activeTab, setActiveTabState] = useState(() => {
@@ -149,9 +174,9 @@ function MainApp() {
   const [loading, setLoading] = useState(false);
 
   // Chat state
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [chatLoading, setChatLoading] = useState(false);
-  const [latestTrace, setLatestTrace] = useState(null);
+  const [latestTrace, setLatestTrace] = useState(INITIAL_TRACE);
 
   // Determine current top hazard (supports URL ?hazard=low|heat|rain|drought|wind for testing/screenshots)
   const getTopHazard = () => {
@@ -178,7 +203,7 @@ function MainApp() {
 
   const currentHazard = getTopHazard();
 
-  const shouldReduceMotion = useReducedMotion();
+  const { shouldReduceMotion } = useMotion();
 
   // Fetch full weather + risk + advisory from backend
   const fetchAgroWeather = useCallback(async () => {
@@ -268,12 +293,6 @@ function MainApp() {
     } finally {
       setChatLoading(false);
     }
-  };
-
-  const pageVariants = {
-    initial: { opacity: 0, y: shouldReduceMotion ? 0 : 8 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.24, ease: 'easeOut' } },
-    exit: { opacity: 0, y: shouldReduceMotion ? 0 : -8, transition: { duration: 0.15, ease: 'easeIn' } }
   };
 
   return (
@@ -540,7 +559,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <MainApp />
+        <MotionProvider>
+          <MainApp />
+        </MotionProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

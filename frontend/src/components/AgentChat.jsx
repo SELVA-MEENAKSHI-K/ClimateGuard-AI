@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   MessageSquare,
   Send,
@@ -10,9 +11,72 @@ import {
   CheckCircle,
   RotateCcw,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  CloudSun,
+  Droplets,
+  Loader2
 } from 'lucide-react';
 import { PageHeader, HeroDecisionCard, AgentGuidanceCard } from './PageTemplate';
+
+const ToolStepItem = ({ tc, index, shouldReduceMotion }) => {
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDone(true);
+    }, 450 + index * 300);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  const toolName = tc.tool || tc.name || 'tool';
+  const getToolIcon = (name) => {
+    const lower = name.toLowerCase();
+    if (lower.includes('weather') || lower.includes('rain') || lower.includes('temp')) return CloudSun;
+    if (lower.includes('irrigation') || lower.includes('water') || lower.includes('et0')) return Droplets;
+    if (lower.includes('risk') || lower.includes('safety') || lower.includes('alert')) return ShieldCheck;
+    return Wrench;
+  };
+  const ToolIcon = getToolIcon(toolName);
+
+  return (
+    <motion.div
+      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.28, delay: shouldReduceMotion ? 0 : index * 0.12 }}
+      className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-[11px] space-y-1.5"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <ToolIcon className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+          <span className="text-sky-300 font-bold font-mono">{toolName}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {done ? (
+            <motion.span
+              initial={shouldReduceMotion ? {} : { scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/70 border border-emerald-800 px-2 py-0.5 rounded-full"
+            >
+              <CheckCircle className="w-3 h-3 text-emerald-400" />
+              <span>Success</span>
+            </motion.span>
+          ) : (
+            <span className="flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-amber-950/70 border border-amber-800 px-2 py-0.5 rounded-full">
+              <Loader2 className="w-3 h-3 animate-spin text-amber-400" />
+              <span>Running</span>
+            </span>
+          )}
+        </div>
+      </div>
+      {tc.arguments && (
+        <pre className="text-slate-300 mt-1 overflow-x-auto text-[10px] bg-slate-950/60 p-2 rounded-lg border border-slate-800 font-mono">
+          {JSON.stringify(tc.arguments, null, 2)}
+        </pre>
+      )}
+    </motion.div>
+  );
+};
 
 export const AgentChat = ({
   profile,
@@ -25,6 +89,7 @@ export const AgentChat = ({
   onClearChat
 }) => {
   const { t, lang } = useTranslation();
+  const shouldReduceMotion = useReducedMotion();
   const [inputQuery, setInputQuery] = useState('');
   const [traceOpen, setTraceOpen] = useState(true);
 
@@ -149,8 +214,11 @@ export const AgentChat = ({
             </div>
           ) : (
             messages.map((msg, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1.0] }}
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
@@ -162,18 +230,41 @@ export const AgentChat = ({
                 >
                   <p className="whitespace-pre-line">{msg.text}</p>
                 </div>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1 font-semibold">
                   {msg.role === 'user' ? t('chat.farmer') : t('chat.agent')}
                 </span>
-              </div>
+              </motion.div>
             ))
           )}
 
+          {/* Typing Indicator: Three Bouncing Dots */}
           {loading && (
-            <div className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-agri-700 dark:text-agri-300 font-medium animate-pulse">
-              <Cpu className="w-4 h-4 animate-spin text-agri-600 dark:text-agri-400" />
-              <span>{t('chat.thinking')}</span>
-            </div>
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-agri-700 dark:text-agri-300 font-medium w-fit shadow-xs"
+            >
+              <div className="flex items-center gap-1.5 px-1">
+                <motion.span
+                  animate={shouldReduceMotion ? {} : { y: [0, -4, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-2 h-2 rounded-full bg-agri-600 dark:bg-agri-400 inline-block"
+                />
+                <motion.span
+                  animate={shouldReduceMotion ? {} : { y: [0, -4, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut', delay: 0.15 }}
+                  className="w-2 h-2 rounded-full bg-agri-600 dark:bg-agri-400 inline-block"
+                />
+                <motion.span
+                  animate={shouldReduceMotion ? {} : { y: [0, -4, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                  className="w-2 h-2 rounded-full bg-agri-600 dark:bg-agri-400 inline-block"
+                />
+              </div>
+              <span className="font-semibold text-slate-600 dark:text-slate-300 ml-1">
+                {t('chat.thinking')}
+              </span>
+            </motion.div>
           )}
         </div>
 
@@ -198,9 +289,9 @@ export const AgentChat = ({
           </button>
         </form>
 
-        {/* Collapsible Agent Trace */}
+        {/* Collapsible Agent Trace with Sequential Tool Steps */}
         {latestTrace && (
-          <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden mt-3">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden mt-3 shadow-xs">
             <button
               type="button"
               onClick={() => setTraceOpen(!traceOpen)}
@@ -217,7 +308,7 @@ export const AgentChat = ({
             </button>
 
             {traceOpen && (
-              <div className="p-4 bg-slate-900 text-slate-200 text-xs font-mono space-y-2 overflow-x-auto">
+              <div className="p-4 bg-slate-900 text-slate-200 text-xs font-mono space-y-3 overflow-x-auto">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                   <span className="text-emerald-400 font-bold">
                     Provider: {latestTrace.provider}
@@ -230,24 +321,17 @@ export const AgentChat = ({
                   </div>
                 )}
                 {latestTrace.tool_calls && latestTrace.tool_calls.length > 0 && (
-                  <div className="space-y-1 mt-2">
-                    <span className="text-slate-400 font-bold block">
+                  <div className="space-y-2 mt-2">
+                    <span className="text-slate-400 font-bold block text-[11px] uppercase tracking-wider">
                       Executed Strands Tools:
                     </span>
                     {latestTrace.tool_calls.map((tc, idx) => (
-                      <div
+                      <ToolStepItem
                         key={idx}
-                        className="bg-slate-800/80 p-2 rounded-lg border border-slate-700/60 text-[11px]"
-                      >
-                        <span className="text-sky-400 font-bold">
-                          {tc.tool || tc.name}
-                        </span>
-                        {tc.arguments && (
-                          <pre className="text-slate-300 mt-1 overflow-x-auto text-[10px]">
-                            {JSON.stringify(tc.arguments, null, 2)}
-                          </pre>
-                        )}
-                      </div>
+                        tc={tc}
+                        index={idx}
+                        shouldReduceMotion={shouldReduceMotion}
+                      />
                     ))}
                   </div>
                 )}

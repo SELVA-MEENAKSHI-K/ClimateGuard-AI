@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion';
+import { useMotion } from '../context/MotionContext';
+import { cardHoverLift, buttonPressScale, ctaPulse } from '../utils/motion';
 import React from 'react';
 import { useTranslation } from '../context/LanguageContext';
 import { WeatherScene } from './WeatherScene';
@@ -14,6 +17,7 @@ export const LandingPage = ({
   onGetStarted
 }) => {
   const { lang, t } = useTranslation();
+  const { shouldReduceMotion } = useMotion();
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -49,14 +53,16 @@ export const LandingPage = ({
           </p>
 
           {/* Soft Start Button (Pill shape, smooth hover scale, high contrast) */}
-          <button
+          <motion.button
             type="button"
             onClick={onGetStarted}
-            className="group px-8 sm:px-10 py-3.5 sm:py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-emerald-950/50 hover:shadow-emerald-900/60 transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-emerald-400/40"
+            {...ctaPulse(shouldReduceMotion)}
+            {...buttonPressScale(shouldReduceMotion)}
+            className="group px-8 sm:px-10 py-3.5 sm:py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-emerald-950/50 hover:shadow-emerald-900/60 transition-colors flex items-center gap-3 border border-emerald-400/40 cursor-pointer"
           >
             <span>{t('landing.getStarted')}</span>
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -65,7 +71,7 @@ export const LandingPage = ({
         {/* Card 1: Precision Irrigation */}
         <div
           onClick={onGetStarted}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group"
+          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group transform hover:-translate-y-1 hover:shadow-lg"
         >
           <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <Droplets className="w-5 h-5" />
@@ -81,7 +87,7 @@ export const LandingPage = ({
         {/* Card 2: Deterministic Risk Engine */}
         <div
           onClick={onGetStarted}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group"
+          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group transform hover:-translate-y-1 hover:shadow-lg"
         >
           <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <ShieldAlert className="w-5 h-5" />
@@ -97,7 +103,7 @@ export const LandingPage = ({
         {/* Card 3: Bilingual Voice Agent */}
         <div
           onClick={onGetStarted}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group"
+          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group transform hover:-translate-y-1 hover:shadow-lg"
         >
           <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <MessageSquareText className="w-5 h-5" />

@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import {
   Droplets,
   CloudRain,
@@ -13,6 +13,7 @@ import {
   Info
 } from 'lucide-react';
 import { CountUp } from './CountUp';
+import { ForecastLoadingSkeleton } from './ForecastLoadingSkeleton';
 import { PageHeader, HeroDecisionCard, AgentGuidanceCard } from './PageTemplate';
 import { formatDayDate } from '../utils/dateFormatter';
 
@@ -125,6 +126,7 @@ export const IrrigationPlan = ({ profile }) => {
         if (res.ok) {
           const data = await res.json();
           if (isMounted) setScheduleData(data);
+          setLoading(false);
           return;
         }
       } catch (e) {
@@ -233,15 +235,12 @@ export const IrrigationPlan = ({ profile }) => {
     };
   }, [profile]);
 
+  if (loading && (!scheduleData || !scheduleData.days || scheduleData.days.length === 0)) {
+    return <ForecastLoadingSkeleton />;
+  }
+
   if (!scheduleData || !scheduleData.days || scheduleData.days.length === 0) {
-    return (
-      <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-        <Droplets className="w-8 h-8 text-agri-600 animate-bounce mx-auto mb-2" />
-        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
-          {lang === 'ta' ? 'பாசனத் திட்டம் ஏற்றப்படுகிறது...' : 'Loading irrigation schedule...'}
-        </p>
-      </div>
-    );
+    return <ForecastLoadingSkeleton />;
   }
 
   // --- Water Balance Calculation ---
@@ -338,7 +337,7 @@ export const IrrigationPlan = ({ profile }) => {
               {t('irrigation.forecastRain')}
             </span>
             <span className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-              {today.rain} {t('irrigation.unitMm')}
+              <CountUp value={today.rain} decimals={1} suffix={` ${t('irrigation.unitMm')}`} />
             </span>
           </div>
         }
@@ -347,7 +346,7 @@ export const IrrigationPlan = ({ profile }) => {
       {/* 3. Three Stat Cards in one row (12-column grid: 4 cols each) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Stat 1: Water Demand (ET0) */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm theme-transition">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 theme-transition">
           <div className="flex items-center justify-between gap-2 mb-2">
             <span className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
               <Waves className="w-4 h-4 shrink-0" />
@@ -366,7 +365,7 @@ export const IrrigationPlan = ({ profile }) => {
         </div>
 
         {/* Stat 2: Forecast Rain */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm theme-transition">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 theme-transition">
           <div className="flex items-center justify-between gap-2 mb-2">
             <span className="text-xs font-bold text-sky-700 dark:text-sky-400 flex items-center gap-1.5">
               <CloudRain className="w-4 h-4 shrink-0" />
@@ -386,7 +385,7 @@ export const IrrigationPlan = ({ profile }) => {
 
         {/* Stat 3: Water Balance (Fixed Logic: Balance = Rain - ET0) */}
         <div
-          className={`rounded-2xl border p-5 shadow-sm theme-transition ${
+          className={`rounded-2xl border p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 theme-transition ${
             isSurplus
               ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800'
               : 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800'
@@ -424,7 +423,12 @@ export const IrrigationPlan = ({ profile }) => {
                 : 'text-amber-700 dark:text-amber-300'
             }`}
           >
-            {isSurplus ? `+${waterBalance}` : `${waterBalance}`} {t('irrigation.unitMm')}
+            <CountUp
+              value={Math.abs(waterBalance)}
+              decimals={1}
+              prefix={isSurplus ? '+' : '-'}
+              suffix={` ${t('irrigation.unitMm')}`}
+            />
           </div>
           <p
             className={`text-xs font-medium mt-1 ${
@@ -439,7 +443,10 @@ export const IrrigationPlan = ({ profile }) => {
       </div>
 
       {/* 4. Chart: ET0 vs Rainfall with visible y-axis (mm), value labels, hover tooltips, and legend */}
-      <section className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-sm theme-transition">
+      <section
+        key={`chart-${lang}-${scheduleData.days?.length}`}
+        className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-sm theme-transition"
+      >
         {/* Header & Legend */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -501,20 +508,28 @@ export const IrrigationPlan = ({ profile }) => {
                     onMouseLeave={() => setHoveredDay(null)}
                     className="flex flex-col items-center justify-end h-full relative cursor-pointer group"
                   >
-                    {/* Tooltip on Hover */}
-                    {isHovered && (
-                      <div className="absolute -top-16 z-30 bg-slate-900 text-white dark:bg-white dark:text-slate-900 p-2 rounded-xl shadow-xl text-[11px] font-bold whitespace-nowrap pointer-events-none transform -translate-x-1/2 left-1/2 transition-all">
-                        <div className="text-[10px] text-slate-300 dark:text-slate-600 border-b border-slate-700 dark:border-slate-200 pb-1 mb-1">
-                          {formattedDate}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-amber-400 dark:text-amber-600">ET0: {d.et0} mm</span>
-                          <span className="text-sky-400 dark:text-sky-600">Rain: {d.rain} mm</span>
-                        </div>
-                      </div>
-                    )}
+                    {/* Tooltip on Hover with Fade In/Out */}
+                    <AnimatePresence>
+                      {isHovered && (
+                        <motion.div
+                          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1.0] }}
+                          className="absolute -top-16 z-30 bg-slate-900 text-white dark:bg-white dark:text-slate-900 p-2 rounded-xl shadow-xl text-[11px] font-bold whitespace-nowrap pointer-events-none transform -translate-x-1/2 left-1/2"
+                        >
+                          <div className="text-[10px] text-slate-300 dark:text-slate-600 border-b border-slate-700 dark:border-slate-200 pb-1 mb-1">
+                            {formattedDate}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-amber-400 dark:text-amber-600">ET0: {d.et0} mm</span>
+                            <span className="text-sky-400 dark:text-sky-600">Rain: {d.rain} mm</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
-                    {/* Bars pair: ET0 (amber) & Rain (sky) */}
+                    {/* Bars pair: ET0 (amber) & Rain (sky) growing from baseline */}
                     <div className="w-full flex items-end justify-center gap-1 sm:gap-2 h-full">
                       {/* ET0 Bar */}
                       <div className="flex flex-col items-center h-full justify-end w-3 sm:w-6">
@@ -528,7 +543,7 @@ export const IrrigationPlan = ({ profile }) => {
                           transition={
                             shouldReduceMotion
                               ? { duration: 0 }
-                              : { duration: 0.5, delay: i * 0.04 }
+                              : { duration: 0.5, delay: i * 0.04, ease: [0.25, 0.1, 0.25, 1.0] }
                           }
                           className="w-full bg-amber-400 dark:bg-amber-500 rounded-t-md shadow-xs group-hover:brightness-110 transition-all min-h-[3px]"
                         />
@@ -546,7 +561,7 @@ export const IrrigationPlan = ({ profile }) => {
                           transition={
                             shouldReduceMotion
                               ? { duration: 0 }
-                              : { duration: 0.5, delay: i * 0.04 + 0.08 }
+                              : { duration: 0.5, delay: i * 0.04 + 0.08, ease: [0.25, 0.1, 0.25, 1.0] }
                           }
                           className="w-full bg-sky-500 dark:bg-sky-400 rounded-t-md shadow-xs group-hover:brightness-110 transition-all min-h-[3px]"
                         />
@@ -583,7 +598,7 @@ export const IrrigationPlan = ({ profile }) => {
             return (
               <div
                 key={d.date}
-                className={`rounded-2xl border p-3.5 flex flex-col justify-between transition-all shadow-xs ${
+                className={`rounded-2xl border p-3.5 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 shadow-xs ${
                   isDayToday
                     ? 'bg-agri-50/70 dark:bg-agri-950/40 border-agri-300 dark:border-agri-700 shadow-sm'
                     : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'
