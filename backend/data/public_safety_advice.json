@@ -1,0 +1,206 @@
+{
+  "heat": {
+    "next_6h": [
+      {
+        "group": "elderly",
+        "action_en": "Keep elderly family members indoors in well-ventilated, shaded rooms. Offer frequent sips of cool drinking water.",
+        "action_ta": "முதியவர்களை நல்ல காற்றோட்டமான நிழலான அறைகளில் இருக்கச் செய்யவும். அடிக்கடி குளிர்ந்த குடிநீர் வழங்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Restrict strenuous outdoor play and direct sun exposure between 11:00 AM and 3:30 PM. Dress in loose cotton clothing.",
+        "action_ta": "காலை 11:00 முதல் பிற்பகல் 3:30 மணி வரை குழந்தைகள் வெயிலில் விளையாடுவதை தவிர்க்கவும். மெல்லிய பருத்தி ஆடைகளை அணியச் செய்யவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Take mandatory 10-15 minute rest breaks in shaded spots every hour. Wear a wide-brimmed hat or damp cloth on head.",
+        "action_ta": "மணிக்கு ஒருமுறை நிழலில் 10-15 நிமிடங்கள் கட்டாய ஓய்வெடுக்கவும். தலையில் தொப்பி அல்லது ஈரத்துணி அணியவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Stay continuously hydrated with plain water, buttermilk, or tender coconut water. Never leave anyone inside parked vehicles.",
+        "action_ta": "குடிநீர், மோர் அல்லது இளநீர் அருந்தி உடலில் நீர்ச்சத்து குறையாமல் பார்த்துக்கொள்ளவும். பூட்டிய வாகனங்களில் யாரையும் அமர வைக்க வேண்டாம்."
+      }
+    ],
+    "next_24h": [
+      {
+        "group": "elderly",
+        "action_en": "Check on elderly neighbors living alone. Sponge arms and forehead with cool water if indoor temperatures rise.",
+        "action_ta": "தனியாக வசிக்கும் முதியவர்களின் நலனை விசாரிக்கவும். வெப்பம் அதிகமாக இருந்தால் குளிர்ந்த நீரால் உடலை ஒற்றி எடுக்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Encourage indoor hobbies, puzzles, or reading during peak afternoon thermal hours.",
+        "action_ta": "நண்பகல் வெயில் நேரத்தில் குழந்தைகளை வீட்டுக்குள்ளேயே விளையாட அல்லது படிக்க ஊக்குவிக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Shift physically demanding tasks to early morning (before 9 AM) or late evening (after 5 PM) when possible.",
+        "action_ta": "கடினமான வேலைகளை காலை 9 மணிக்கு முன்போ அல்லது மாலை 5 மணிக்குப் பின்போ செய்ய திட்டமிடவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Keep home curtains and blinds drawn on sun-facing windows during the day to block radiating heat.",
+        "action_ta": "பகல் வேளையில் வெயில் படும் ஜன்னல் திரைகளை மூடி வைத்து அறையின் வெப்பத்தைக் குறைக்கவும்."
+      }
+    ],
+    "next_48h": [
+      {
+        "group": "elderly",
+        "action_en": "Plan grocery or essential errands early in the morning. Avoid stepping out during noon heat spikes.",
+        "action_ta": "அத்தியாவசிய தேவைகளுக்கு காலை நேரத்திலேயே சென்று வரவும். நண்பகல் வேளையில் வெளியே செல்வதை தவிர்க்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Ensure schools or daycare areas have accessible drinking water stations and shaded transit.",
+        "action_ta": "பள்ளி மற்றும் குழந்தைகள் இருக்கும் இடங்களில் போதுமான குடிநீர் வசதி இருப்பதை உறுதி செய்யவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Carry a 2-litre insulated water flask with oral fluids and light snacks to work sites.",
+        "action_ta": "பணி செய்யும் இடத்திற்கு போதுமான குடிநீர் பாட்டில் மற்றும் எளிய உணவுகளை எடுத்துச் செல்லவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Monitor local IMD temperature forecasts and heatwave alerts before scheduling inter-city travel.",
+        "action_ta": "பயணம் மேற்கொள்வதற்கு முன் அதிகாரப்பூர்வ IMD வெப்ப அலை முன்னறிவிப்பை சரிபார்க்கவும்."
+      }
+    ]
+  },
+  "rain": {
+    "next_6h": [
+      {
+        "group": "elderly",
+        "action_en": "Clear indoor walking pathways of water slippage hazards. Keep walking sticks and emergency flashlights easily accessible.",
+        "action_ta": "வீட்டுக்குள் வழுக்கும் பகுதிகளை உலர வைக்கவும். ஊன்றுகோல் மற்றும் டார்ச் லைட்டுகளை கைக்கு எட்டும் தூரத்தில் வைக்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Strictly prevent children from wading in floodwater, roadside puddles, or touching outdoor electrical posts.",
+        "action_ta": "தேங்கிய மழைநீரில் விளையாடுவதையோ, தெரு மின் கம்பங்களை தொடுவதையோ குழந்தைகள் செய்யாமல் கண்காணிக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Avoid walking or operating vehicles across submerged bridges, causeways, or swift-flowing storm nullahs.",
+        "action_ta": "நீர் பெருக்கெடுத்து ஓடும் தரைப்பாலங்கள் மற்றும் மழைநீர் கால்வாய்களை கடக்க முயற்சிக்க வேண்டாம்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Charge mobile phones and power banks immediately. Avoid driving through waterlogged railway subways.",
+        "action_ta": "செல்போன்கள் மற்றும் பவர் பேங்குகளை உடனடியாக சார்ஜ் செய்யவும். நீர் தேங்கிய சுரங்கப்பாதைகளில் வாகனங்களை இயக்க வேண்டாம்."
+      }
+    ],
+    "next_24h": [
+      {
+        "group": "elderly",
+        "action_en": "Ensure a 3-day supply of personal daily necessities and drinking water is securely stored on elevated surfaces.",
+        "action_ta": "அத்தியாவசிய பொருட்கள் மற்றும் பாதுகாப்பான குடிநீரை உயரமான இடங்களில் முன்கூட்டியே சேமித்து வைக்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Keep children warm and dry; verify school holiday announcements from the District Collector.",
+        "action_ta": "குழந்தைகளை கதகதப்பாக வைத்திருக்கவும்; மாவட்ட ஆட்சியரின் பள்ளி விடுமுறை அறிவிப்புகளை கவனிக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Wear waterproof non-skid boots and high-visibility raincoats if required to be outdoors for critical duties.",
+        "action_ta": "அவசிய பணிகளுக்கு வெளியே செல்ல நேரிட்டால் வழுக்காத காலணிகள் மற்றும் ஒளிரும் மழைக்கோட்டுகளை அணியவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Boil drinking water before consumption to prevent waterborne contamination during inundation.",
+        "action_ta": "வெள்ள காலங்களில் குடிநீரை நன்கு காய்ச்சி பருகி தொற்றுநோய்களில் இருந்து பாதுகாத்துக் கொள்ளவும்."
+      }
+    ],
+    "next_48h": [
+      {
+        "group": "elderly",
+        "action_en": "Identify the nearest designated community relief center or elevated neighbor home in flood-prone streets.",
+        "action_ta": "தாழ்வான பகுதிகளில் வசிப்போர் அருகிலுள்ள பாதுகாப்பான நிவாரண மையங்களை முன்கூட்டியே அறிந்து கொள்ளவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Inspect home surroundings for damp walls, peeling plaster, or insect/reptile entry after rain recession.",
+        "action_ta": "மழை நின்ற பிறகு வீட்டைச் சுற்றி பூச்சிகள் அல்லது ஊர்வன வராதவாறு பாதுகாப்புடன் கண்காணிக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Report fallen trees, choked storm drains, or dangling electric cables to the Municipal Control Room.",
+        "action_ta": "சாய்ந்த மரங்கள், அடைபட்ட வடிகால்கள் அல்லது அறுந்து கிடக்கும் மின் கம்பிகளை மாநகராட்சி கட்டுப்பாட்டு அறைக்கு தெரிவிக்கவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Keep emergency numbers (112, 1077) on quick dial. Official IMD and State Disaster warnings take priority.",
+        "action_ta": "அவசர எண்களை (112, 1077) தயாராக வைத்திருக்கவும். அதிகாரப்பூர்வ பேரிடர் எச்சரிக்கைகளுக்கு முன்னுரிமை அளிக்கவும்."
+      }
+    ]
+  },
+  "wind": {
+    "next_6h": [
+      {
+        "group": "elderly",
+        "action_en": "Stay in central, sturdy rooms of the house away from wide glass panes, temporary tin sheets, or old tiles.",
+        "action_ta": "கண்ணாடி ஜன்னல்கள் மற்றும் தகரக் கூரைகளில் இருந்து விலகி வீட்டின் உறுதியான உள்பகுதியில் இருக்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Keep children inside solid rooms; fasten window latches and terrace access doors tightly.",
+        "action_ta": "ஜன்னல் தாழ்ப்பாள்கள் மற்றும் மொட்டை மாடி கதவுகளை பூட்டி குழந்தைகளை பாதுகாப்பாக வைத்திருக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Halt all scaffolding, rooftop repair, crane handling, or ladder work during high-velocity wind gusts.",
+        "action_ta": "பலத்த காற்று வீசும் போது உயரமான இடங்களில் வேலை செய்வது மற்றும் கூரை பழுதுபார்ப்பதை உடனடியாக நிறுத்தவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Park vehicles away from aged avenue trees, roadside hoardings, and overhead electrical lines.",
+        "action_ta": "வாகனங்களை பலவீனமான மரங்கள், விளம்பர பதாகைகள் மற்றும் மின்கம்பிகளுக்கு அடியில் நிறுத்த வேண்டாம்."
+      }
+    ],
+    "next_24h": [
+      {
+        "group": "elderly",
+        "action_en": "Secure loose balcony flowerpots, outdoor chairs, or drying rods that could become windborne hazards.",
+        "action_ta": "பால்கனியில் உள்ள பூந்தொட்டிகள் மற்றும் காற்றில் பறக்கக்கூடிய பொருட்களை அப்புறப்படுத்தவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Explain wind safety to children and keep emergency battery-operated torches or emergency lights ready.",
+        "action_ta": "குழந்தைகளுக்கு காற்று பாதுகாப்பு குறித்து விளக்கி, அவசர விளக்குகளை சார்ஜ் செய்து வைக்கவும்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Tie down loose tarpaulins, construction metal sheets, and temporary signage with heavy ropes.",
+        "action_ta": "தற்காலிக தகரக் கொட்டகைகள் மற்றும் கட்டுமான பலகைகளை கயிறுகளால் உறுதியாக கட்டி வைக்கவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Avoid non-essential coastal or highway travel while severe wind or squall advisories are active.",
+        "action_ta": "பலத்த காற்று மற்றும் சூறாவளி எச்சரிக்கை உள்ள போது நெடுஞ்சாலை மற்றும் கடற்கரை பயணங்களை தவிர்க்கவும்."
+      }
+    ],
+    "next_48h": [
+      {
+        "group": "elderly",
+        "action_en": "Do not venture out immediately after strong winds; watch for precariously suspended tree branches or wires.",
+        "action_ta": "காற்று நின்றவுடனேயே வெளியே செல்ல வேண்டாம்; தொங்கும் மரக்கிளைகள் அல்லது கம்பிகள் குறித்து எச்சரிக்கையாக இருக்கவும்."
+      },
+      {
+        "group": "children",
+        "action_en": "Keep children away from fallen branches or broken glass until municipal sanitation clearance is complete.",
+        "action_ta": "சாலையோரங்களில் முறிந்த மரக்கிளைகள் மற்றும் உடைந்த பொருட்கள் அருகே குழந்தைகளை விட வேண்டாம்."
+      },
+      {
+        "group": "outdoor_worker",
+        "action_en": "Inspect physical structural integrity of work sheds and support pillars before resuming heavy operations.",
+        "action_ta": "பணிகளை தொடங்குவதற்கு முன் பணிமனைகள் மற்றும் மேற்கூரைகளின் உறுதித்தன்மையை பரிசோதிக்கவும்."
+      },
+      {
+        "group": "everyone",
+        "action_en": "Verify local emergency clearance through civic helpline before traveling through tree-lined avenues.",
+        "action_ta": "மரங்கள் நிறைந்த சாலைகளில் பயணிக்கும் முன் மாநகராட்சி அறிவிப்புகளை கவனிக்கவும்."
+      }
+    ]
+  }
+}

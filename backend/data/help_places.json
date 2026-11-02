@@ -1,0 +1,39 @@
+{
+  "district": "Madurai",
+  "notice": "sample data, verify locally",
+  "places": [
+    {
+      "id": "help-1",
+      "name": "Madurai Urban Primary Health Center (Placeholder)",
+      "type": "Primary Health & First Aid",
+      "type_ta": "ஆரம்ப சுகாதார நிலையம் மற்றும் முதலுதவி",
+      "address": "Sample Ward 12, Melur Main Road, Madurai (Sample data, verify locally)",
+      "phone": "0452-2530000 (Sample Placeholder)",
+      "operating_hours": "24/7 Emergency Care",
+      "operating_hours_ta": "24 மணி நேர அவசர சிகிச்சை",
+      "is_sample": true
+    },
+    {
+      "id": "help-2",
+      "name": "District Cyclone & Flood Relief Shelter (Placeholder)",
+      "type": "Community Evacuation Shelter",
+      "type_ta": "சமுதாய வெள்ள நிவாரண மையம்",
+      "address": "Collectorate Road, K.K. Nagar, Madurai (Sample data, verify locally)",
+      "phone": "0452-2531110 (Sample Placeholder)",
+      "operating_hours": "Active during IMD Weather Alerts",
+      "operating_hours_ta": "வானிலை எச்சரிக்கையின் போது இயங்கும்",
+      "is_sample": true
+    },
+    {
+      "id": "help-3",
+      "name": "Government Community Disaster Care Unit (Placeholder)",
+      "type": "Municipal Disaster Care & Relief Distribution",
+      "type_ta": "மாநகராட்சி பேரிடர் மற்றும் நிவாரண உதவி மையம்",
+      "address": "Sample Ward 45, Mattuthavani, Madurai (Sample data, verify locally)",
+      "phone": "0452-2532220 (Sample Placeholder)",
+      "operating_hours": "Open 8:00 AM - 8:00 PM (Emergency 24h)",
+      "operating_hours_ta": "காலை 8:00 - இரவு 8:00 (அவசரகாலம் 24 மணிநேரம்)",
+      "is_sample": true
+    }
+  ]
+}

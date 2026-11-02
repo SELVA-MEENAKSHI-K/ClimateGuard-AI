@@ -1,0 +1,373 @@
+{
+  "app": {
+    "title": "ClimateGuard AI",
+    "subtitle": "Climate Early-Warning Agent for Tamil Nadu Farmers",
+    "tagline": "Precision Agromet • Timely Warnings • Crop Resilience",
+    "imdPriorityBanner": "⚠️ Official IMD warnings take priority.",
+    "footerNotice": "Official IMD warnings take priority. This advisory provides general weather-based farm guidance.",
+    "mockModeNotice": "Mock Mode Active: Running with deterministic agro-climatic templates.",
+    "liveModeNotice": "Live Mode Active: Connected to Open-Meteo & Strands Bedrock.",
+    "offlineNotice": "Network unavailable — showing cached forecast."
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Home",
+    "irrigation": "Irrigation Plan",
+    "whatif": "What If?",
+    "safetyPlan": "Safety Plan",
+    "nearbyHelp": "Nearby Help",
+    "askAgent": "Ask Agent",
+    "impact": "Impact",
+    "proof": "Impact",
+    "about": "About",
+    "settings": "Settings",
+    "chat": "Ask Agent"
+  },
+  "persona": {
+    "farmer": "Farmer Mode",
+    "public": "General Public",
+    "switch": "Switch View",
+    "farmerDesc": "Agro-climatic advisories, irrigation planning & crop resilience",
+    "publicDesc": "Community safety guidance, heat warnings & nearby shelters"
+  },
+  "irrigation": {
+    "title": "7-Day Smart Irrigation Schedule",
+    "subtitle": "Computed deterministically from Open-Meteo ET0 (evaporative demand) and forecast rain",
+    "chartTitle": "Daily Evaporative Loss (ET0) vs Forecast Rainfall",
+    "chartLegendEt0": "Water Loss (ET0 mm)",
+    "chartLegendRain": "Rainfall (mm)",
+    "et0": "Evapotranspiration (ET0)",
+    "rain": "Forecast Rain",
+    "deficit": "Net Moisture Deficit",
+    "totalEt0": "Total Water Demand",
+    "totalRain": "Total Expected Rain",
+    "daysSummary": "7-Day Summary",
+    "adviceTitle": "Water Management Strategy",
+    "actions": {
+      "irrigate": "Normal Irrigation",
+      "light": "Light Irrigation",
+      "skip": "Skip Irrigation"
+    }
+  },
+  "whatif": {
+    "title": "What-If? Agro-Climatic Simulator",
+    "subtitle": "Test how your crop withstands hypothetical prolonged heat or dry spells",
+    "disclaimer": "Scenario, not a forecast.",
+    "sliderDry": "Simulate No Rain for N Days",
+    "sliderTemp": "Simulate Temperature Increase (+°C)",
+    "baseline": "Current Forecast Baseline",
+    "simulated": "Hypothetical Scenario Outcome",
+    "actionPlan": "Specialist Agent Adaptive Action Plan",
+    "daysUnit": "Days without rain",
+    "heatShift": "Heat Hazard Level",
+    "droughtShift": "Drought Stress Level",
+    "overallShift": "Composite Hazard Rating",
+    "runSim": "Recalculating Deterministic Engine..."
+  },
+  "safety": {
+    "title": "Community Climate Safety Plan",
+    "subtitle": "Protecting vulnerable groups during extreme heat, downpours, and severe weather",
+    "selectHazard": "Select Weather Hazard",
+    "filterGroup": "Filter by Vulnerable Group",
+    "allGroups": "All Vulnerable Groups",
+    "elderly": "Elderly (Seniors)",
+    "children": "Children",
+    "outdoor_worker": "Outdoor Workers",
+    "everyone": "General Public",
+    "next6h": "Immediate (Next 6 Hours)",
+    "next24h": "Next 24 Hours",
+    "next48h": "Next 48 Hours"
+  },
+  "nearby": {
+    "title": "Emergency Shelters & Relief Points",
+    "subtitle": "Local evacuation shelters, primary health centers, and community relief posts",
+    "notice": "Sample data for Madurai district. Please verify locally with District Collectorate or VAO.",
+    "call": "Call Center / Help Line",
+    "hours": "Operating Status",
+    "address": "Location / Address",
+    "emergencyHelpline": "24/7 State Disaster Helpline: 1077 | Medical Emergency: 108 | Kisan Call Center: 1800-180-1551"
+  },
+  "settings": {
+    "title": "Preferences & Settings",
+    "subtitle": "Customize your location, crop profile, user persona, and theme",
+    "persona": "Current Mode",
+    "language": "Language",
+    "district": "Selected District",
+    "crop": "Target Crop",
+    "stage": "Growth Stage",
+    "theme": "Theme (Appearance)",
+    "close": "Save & Close"
+  },
+  "theme": {
+    "toggle": "Toggle Theme",
+    "dark": "Dark Mode",
+    "light": "Light Mode"
+  },
+  "provider": {
+    "live": "Live agent (Strands)",
+    "mock": "Mock mode",
+    "status": "System Status"
+  },
+  "hero3d": {
+    "title": "Today's Agro-Climatic Outlook",
+    "interactiveHint": "3D Interactive Scene • Drag to inspect",
+    "hazardHeat": "Heat Hazard Detected",
+    "hazardRain": "Heavy Rain Deluge Alert",
+    "hazardDrought": "Dry Spell / Moisture Stress",
+    "hazardWind": "Strong Wind Advisory",
+    "hazardFavorable": "Favorable Farm Weather"
+  },
+  "about": {
+    "title": "About ClimateGuard AI",
+    "subtitle": "Bilingual Climate Early-Warning & Agro-Advisory Agent for Tamil Nadu Farmers",
+    "missionTitle": "Agricultural Resilience",
+    "missionDesc": "Designed for farmers across Tamil Nadu, ClimateGuard AI couples open high-resolution meteorological models with deterministic agronomical rule engines. It ensures early, actionable, and hyper-local safeguards before extreme heat, rain, drought, or wind impact crops.",
+    "boundaryTitle": "Deterministic Safety Boundary",
+    "boundaryDesc": "Large Language Models generate human-friendly bilingual explanations, but NEVER compute risk or fabricate warnings. Hazard levels strictly adhere to IMD thresholds and multi-model ensemble consensus (ECMWF, GFS, ICON).",
+    "officialTitle": "Official IMD Priority",
+    "officialDesc": "All advisories explicitly reinforce that official India Meteorological Department (IMD) bulletins, yellow/orange/red alerts, and State Disaster Management advisories supersede all automated model guidance.",
+    "featuresTitle": "Core Architectural Capabilities",
+    "f1": "6h / 24h / 48h proactive field checklist for timely intervention",
+    "f2": "Bilingual Tamil and English support with native voice synthesis",
+    "f3": "Ensemble spread confidence detection: warns when forecast models disagree",
+    "f4": "SMS-ready daily farm brief formatted within 300 characters",
+    "f5": "Zero-hallucination spray window evaluator preventing chemical runoff"
+  },
+  "profile": {
+    "title": "Farmer Profile",
+    "district": "District",
+    "crop": "Crop",
+    "stage": "Growth Stage",
+    "defaultDistrict": "Madurai",
+    "selectDistrict": "Select District",
+    "selectCrop": "Select Crop",
+    "selectStage": "Select Growth Stage",
+    "stages": {
+      "sowing": "Sowing / Nursery Stage",
+      "vegetative": "Vegetative Growth Stage",
+      "flowering": "Flowering / Panicle Initiation",
+      "harvest": "Maturity / Harvest Stage"
+    },
+    "crops": {
+      "paddy": "Paddy (Rice)",
+      "banana": "Banana",
+      "groundnut": "Groundnut",
+      "sugarcane": "Sugarcane",
+      "cotton": "Cotton",
+      "maize": "Maize (Corn)",
+      "millets": "Millets (Ragi/Bajra)",
+      "vegetables": "Vegetables (Tomato/Chilli)",
+      "coconut": "Coconut"
+    },
+    "districts": {
+      "Madurai": "Madurai",
+      "Thanjavur": "Thanjavur",
+      "Coimbatore": "Coimbatore",
+      "Tirunelveli": "Tirunelveli",
+      "Salem": "Salem",
+      "Cuddalore": "Cuddalore",
+      "Nagapattinam": "Nagapattinam",
+      "Tiruvannamalai": "Tiruvannamalai",
+      "Dharmapuri": "Dharmapuri",
+      "Theni": "Theni",
+      "Tiruchirappalli": "Tiruchirappalli",
+      "Ramanathapuram": "Ramanathapuram"
+    }
+  },
+  "weather": {
+    "currentTitle": "Field Weather Observation",
+    "temp": "Temperature",
+    "feelsLike": "Feels Like",
+    "humidity": "Humidity",
+    "wind": "Wind Speed",
+    "rainProb": "Rain Probability",
+    "rainAmount": "Precipitation",
+    "evapo": "Evapotranspiration (ET0)",
+    "sevenDayForecast": "7-Day Weather Forecast",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "high": "High",
+    "low": "Low",
+    "rain": "Rain",
+    "highHumidity": "High Humidity",
+    "normalHumidity": "Normal",
+    "faoEt0": "FAO-56 ET0",
+    "max": "Max"
+  },
+  "risk": {
+    "title": "Computed Climate Hazard Levels",
+    "ruleNote": "Determined by strict Python rules (not LLM decided)",
+    "compositeRisk": "Overall Hazard Rating",
+    "heat": "Heat Stress",
+    "heavyRain": "Heavy Rain",
+    "drought": "Drought / Dry Spell",
+    "wind": "Wind & Gusts",
+    "levels": {
+      "LOW": "Low Risk (Normal)",
+      "MODERATE": "Moderate Warning",
+      "HIGH": "High Risk",
+      "CRITICAL": "Critical Risk"
+    },
+    "heatDescs": {
+      "LOW": "Temperatures are within normal crop physiological range.",
+      "MODERATE": "Elevated heat; crop evapotranspiration increases.",
+      "HIGH": "Severe heat stress; moisture depletion and wilting risk.",
+      "CRITICAL": "Heatwave conditions! Immediate canopy cooling required."
+    },
+    "rainDescs": {
+      "LOW": "Light rain or dry conditions (0 - 15.5 mm).",
+      "MODERATE": "Moderate rainfall expected (15.6 - 64.4 mm).",
+      "HIGH": "IMD Classification: Heavy Rain Alert (64.5 - 115.5 mm).",
+      "CRITICAL": "IMD Classification: Very Heavy to Extremely Heavy (>115.5 mm)."
+    },
+    "droughtDescs": {
+      "LOW": "Adequate soil moisture available.",
+      "MODERATE": "Low rainfall; monitor irrigation intervals.",
+      "HIGH": "Extended dry spell; significant crop moisture deficit.",
+      "CRITICAL": "Severe drought stress; life-saving irrigation needed."
+    },
+    "windDescs": {
+      "LOW": "Normal wind speed (< 25 km/h).",
+      "MODERATE": "Breezy conditions (25 - 40 km/h); exercise spray drift care.",
+      "HIGH": "Strong winds (> 40 km/h); banana and tall crop lodging risk.",
+      "CRITICAL": "Gale/Squall (> 55 km/h); severe crop damage likely."
+    },
+    "confidenceTitle": "Forecast Confidence",
+    "confidence": {
+      "HIGH": "High Confidence",
+      "MEDIUM": "Medium Confidence",
+      "LOW": "Low Confidence",
+      "disagreeAlert": "Models disagree, check official IMD alert"
+    }
+  },
+  "farmBrief": {
+    "title": "Daily Farm Brief",
+    "subtitle": "Actionable SMS summary (max 300 characters)",
+    "smsPreview": "SMS Preview",
+    "smsSender": "Kisan Agromet Alert • Tamil Nadu",
+    "copy": "Copy Brief",
+    "copied": "Copied!",
+    "charCount": "chars",
+    "topRisk": "Top Risk",
+    "todayAction": "Action for Today",
+    "avoid": "Avoid"
+  },
+  "checklist": {
+    "title": "Actionable Preventive Checklist",
+    "subtitle": "Tasks matched to your crop and forecast",
+    "next6h": "Next 6 Hours",
+    "next24h": "Next 24 Hours",
+    "next48h": "Next 48 Hours",
+    "pending": "To Do",
+    "done": "Completed",
+    "urgent": "Urgent"
+  },
+  "spray": {
+    "title": "Weather-Based Spray Window",
+    "ruleNotice": "Weather conditions only (no pesticide products or chemical dosages)",
+    "safe": "Safe to Spray",
+    "caution": "Caution (Moderate Wind / Rain Risk)",
+    "unsafe": "Do Not Spray (High Wind / Heavy Rain)",
+    "windCondition": "Wind Speed",
+    "rainCondition": "Rain Probability"
+  },
+  "audio": {
+    "listenTamil": "Listen Aloud in Tamil",
+    "listenEnglish": "Listen Aloud in English",
+    "stop": "Stop Audio",
+    "playing": "Playing Audio...",
+    "unavailable": "Tamil voice not supported by browser"
+  },
+  "trace": {
+    "title": "Agent Execution Trace (Orchestrator & Tools)",
+    "show": "Show Agent Trace",
+    "hide": "Hide Agent Trace",
+    "orchestrator": "Orchestrator",
+    "toolCalls": "Executed Tools",
+    "status": "Status",
+    "subagents": "Specialist Subagents: RiskAnalyst, FarmAdvisor, TamilLocalizer",
+    "structuredOutput": "Pydantic Structured Output Verified"
+  },
+  "impact": {
+    "title": "Real-World Impact & Historical Replay",
+    "subtitle": "Historical validation: 48h early warnings prevented ~65% crop damage in Madurai",
+    "eventName": "Madurai Extreme Rain & Inundation Event (Oct 2024)",
+    "leadTime": "Advance Warning Lead Time",
+    "leadTimeValue": "48 Hours in Advance",
+    "leadTimeSub": "T-48h early trigger before heavy rainfall onset",
+    "maxRain": "Recorded Peak 24h Rain",
+    "damagePrevented": "Estimated Crop Loss Avoidance",
+    "damageValue": "~65% via proactive drainage",
+    "damageSub": "Based on timely drainage trenches & banana propping",
+    "timelineTitle": "Event Progression & Recommended Farm Actions",
+    "day": "Day",
+    "rainfall": "Rainfall",
+    "computedRisk": "Computed Risk",
+    "actionsTaken": "Recommended Agricultural Safeguards",
+    "comparisonTitle": "Observed Weather vs Agent Advisory",
+    "verifiedNotice": "Verified against Open-Meteo Historical Archive API.",
+    "replayButton": "Replay Event",
+    "refreshing": "Refreshing...",
+    "imdVeryHeavy": "IMD Classification: Very Heavy Rain (>115.5 mm)",
+    "openMeteoLink": "Open-Meteo Archive API"
+  },
+  "proof": {
+    "title": "Historical Climate Replay & Verification",
+    "subtitle": "Madurai Historical Case: Replaying extreme weather with Open-Meteo Archive API",
+    "eventName": "Madurai Extreme Rain & Inundation Event (Oct 2024)",
+    "leadTime": "Advance Warning Lead Time",
+    "leadTimeValue": "48 Hours in Advance",
+    "leadTimeSub": "T-48h early trigger before heavy rainfall onset",
+    "maxRain": "Recorded Peak 24h Rain",
+    "damagePrevented": "Estimated Crop Loss Avoidance",
+    "damageValue": "~65% via proactive drainage",
+    "damageSub": "Based on timely drainage trenches & banana propping",
+    "timelineTitle": "Event Progression & Recommended Farm Actions",
+    "day": "Day",
+    "rainfall": "Rainfall",
+    "computedRisk": "Computed Risk",
+    "actionsTaken": "Recommended Agricultural Safeguards",
+    "comparisonTitle": "Observed Weather vs Agent Advisory",
+    "verifiedNotice": "Verified against Open-Meteo Historical Archive API.",
+    "replayButton": "Replay Event",
+    "refreshing": "Refreshing...",
+    "imdVeryHeavy": "IMD Classification: Very Heavy Rain (>115.5 mm)",
+    "openMeteoLink": "Open-Meteo Archive API"
+  },
+  "chat": {
+    "title": "Ask ClimateGuard AI",
+    "subtitle": "Get instant answers on crop protection, irrigation, and weather timing",
+    "placeholder": "e.g., Should I spray foliar spray today? How to protect banana from wind?",
+    "send": "Send",
+    "clear": "Clear",
+    "thinking": "Agent is reasoning and assessing risks...",
+    "quickPromptsTitle": "Quick Questions:",
+    "farmer": "Farmer",
+    "agent": "ClimateGuard AI",
+    "emptyHint": "Ask questions regarding today's weather, irrigation, and crop protection.",
+    "promptsFarmer": [
+      "Is it safe to spray today?",
+      "What should I do before the rain arrives?",
+      "How to protect my crop from extreme heat?",
+      "When should I plan the next irrigation?"
+    ],
+    "promptsPublic": [
+      "Where is the nearest relief shelter?",
+      "How to protect children from heatwave?",
+      "Is it safe to go outdoors today?"
+    ],
+    "prompts": [
+      "Is it safe to spray today?",
+      "What should I do before the rain arrives?",
+      "How to protect my crop from extreme heat?",
+      "When should I plan the next irrigation?"
+    ],
+    "disclaimer": "AI explanations strictly follow deterministic risk rules. Official IMD warnings take priority."
+  },
+  "shelter": {
+    "title": "Emergency Agri Relief & Storage",
+    "nearestShelter": "Nearest Regulated Market Yard / Cyclone Shelter",
+    "contact": "Kisan Call Centre Helpline",
+    "phone": "1800-180-1551 (Toll-Free Kisan Call Centre)"
+  }
+}

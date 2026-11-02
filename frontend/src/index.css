@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-family: 'Inter', 'Noto Sans Tamil', system-ui, sans-serif;
+  }
+}
+
+/* Ensure large touch targets for mobile accessibility (>= 44px min touch area) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Tamil font rendering optimization */
+.font-tamil {
+  font-family: 'Noto Sans Tamil', 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* 3D tilt styles */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Smooth color transitions for dark/light theme */
+.theme-transition {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
