@@ -4,9 +4,10 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Cloud, Droplets, Thermometer, Wind, Umbrella, Waves } from 'lucide-react';
 import { TiltCard } from './TiltCard';
 import { CountUp } from './CountUp';
+import { formatDayDate } from '../utils/dateFormatter';
 
 export const WeatherSummary = ({ weatherData }) => {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
 
   if (!weatherData || !weatherData.current) return null;
@@ -153,8 +154,8 @@ export const WeatherSummary = ({ weatherData }) => {
                     : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 text-slate-700 dark:text-slate-300'
                 }`}
               >
-                <div className="font-bold text-slate-900 dark:text-white mb-1">
-                  {isToday ? t('weather.today') : idx === 1 ? t('weather.tomorrow') : dateStr.slice(5)}
+                <div className="font-bold text-slate-900 dark:text-white mb-1 truncate">
+                  {isToday ? t('weather.today') : idx === 1 ? t('weather.tomorrow') : formatDayDate(dateStr, lang)}
                 </div>
                 <div className="text-sm font-bold text-slate-900 dark:text-white">
                   {maxTemp}° <span className="text-slate-400 dark:text-slate-500 font-normal">/ {minTemp}°</span>

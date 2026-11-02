@@ -18,6 +18,8 @@ import { IrrigationPlan } from './components/IrrigationPlan';
 import { WhatIfSimulator } from './components/WhatIfSimulator';
 import { SafetyPlan } from './components/SafetyPlan';
 import { NearbyHelp } from './components/NearbyHelp';
+import { PageHeader, HeroDecisionCard, AgentGuidanceCard } from './components/PageTemplate';
+import { Sprout, RefreshCw, CheckCircle, AlertTriangle } from 'lucide-react';
 
 // Resilient default fallback data for immediate demo responsiveness
 const INITIAL_RISK_DATA = {
@@ -98,8 +100,33 @@ const INITIAL_SPRAY = {
 };
 
 function MainApp() {
-  const { lang } = useTranslation();
-  const [activeTab, setActiveTab] = useState('home');
+  const { lang, t } = useTranslation();
+  const [activeTab, setActiveTabState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) return hash;
+      const p = new URLSearchParams(window.location.search).get('tab');
+      if (p) return p;
+    }
+    return 'home';
+  });
+
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined') {
+      window.location.hash = tab;
+    }
+  };
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const h = window.location.hash.replace('#', '');
+      if (h) setActiveTabState(h);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
   const [persona, setPersona] = useState('farmer'); // 'farmer' | 'public'
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -232,7 +259,7 @@ function MainApp() {
         isMockMode={isMockMode}
       />
 
-      <main className="max-w-5xl w-full mx-auto px-3 sm:px-6 py-5 flex-1">
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 flex-1">
         <AnimatePresence mode="wait">
           {/* Home / Dashboard View */}
           {(activeTab === 'home' || activeTab === 'dashboard') && (
@@ -244,37 +271,109 @@ function MainApp() {
               exit="exit"
               className="space-y-6"
             >
-              <LocationCropSelector
-                profile={profile}
-                onChangeProfile={setProfile}
-                onRefresh={fetchAgroWeather}
-                loading={loading}
+              {/* 1. Page Header */}
+              <PageHeader
+                title={t('app.title')}
+                subtitle={`${profile.district} • ${t(`profile.crops.${profile.crop}`)} • ${t(`profile.stages.${profile.growth_stage}`)}`}
+                actionButton={
+                  <button
+                    type="button"
+                    onClick={fetchAgroWeather}
+                    disabled={loading}
+                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200 dark:border-slate-700 shadow-xs"
+                    title={lang === 'ta' ? 'வானிலை புதுப்பிக்க' : 'Refresh live weather'}
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+                    <span>{lang === 'ta' ? 'புதுப்பிக்க' : 'Refresh'}</span>
+                  </button>
+                }
               />
 
-              {/* 3D Hero Scene on Desktop / 2D Fallback on Mobile & Non-WebGL */}
-              <HeroContainer riskData={riskData} />
-
-              <RiskOverview riskData={riskData} />
-
-              <FarmBriefCard farmBrief={farmBrief} />
-
-              <AdvisoryCard
-                advisory={advisory}
-                checklist={checklist}
-                sprayWindow={sprayWindow}
+              {/* 2. Hero Decision Card for Today's Farm Action */}
+              <HeroDecisionCard
+                badge={lang === 'ta' ? (farmBrief.top_risk_ta || farmBrief.top_risk) : (farmBrief.top_risk || farmBrief.top_risk_ta)}
+                decision={
+                  lang === 'ta'
+                    ? (farmBrief.action_today_ta || farmBrief.action_today_en || '').replace(/paddy/gi, 'நெல்').replace(/banana/gi, 'வாழை')
+                    : (farmBrief.action_today_en || farmBrief.action_today_ta)
+                }
+                reason={
+                  lang === 'ta'
+                    ? `தவிர்க்க: ${(farmBrief.avoid_today_ta || farmBrief.avoid_today_en || '').replace(/paddy/gi, 'நெல்')}`
+                    : `Avoid: ${farmBrief.avoid_today_en || farmBrief.avoid_today_ta}`
+                }
+                colorAccent={riskData.composite_risk === 'LOW' ? 'emerald' : riskData.composite_risk === 'MODERATE' ? 'amber' : 'rose'}
+                icon={Sprout}
+                extraDetails={
+                  <div className="bg-white/90 dark:bg-slate-900/90 px-4 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 text-center shadow-xs">
+                    <span className="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">
+                      {t('spray.title')}
+                    </span>
+                    <span className={`text-xs sm:text-sm font-bold ${
+                      sprayWindow?.status === 'SAFE'
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : sprayWindow?.status === 'CAUTION'
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : 'text-rose-600 dark:text-rose-400'
+                    }`}>
+                      {sprayWindow?.status === 'SAFE'
+                        ? t('spray.safeShort')
+                        : sprayWindow?.status === 'CAUTION'
+                        ? t('spray.cautionShort')
+                        : sprayWindow?.status === 'UNSAFE'
+                        ? t('spray.unsafeShort')
+                        : t('spray.safeShort')}
+                    </span>
+                  </div>
+                }
               />
 
-              <WeatherSummary weatherData={weatherData} />
+              {/* 3. 12-Column Grid Layout */}
+              <div className="grid grid-cols-12 gap-6">
+                {/* Location & Crop Profile Selector (12 cols) */}
+                <div className="col-span-12">
+                  <LocationCropSelector
+                    profile={profile}
+                    onChangeProfile={setProfile}
+                    onRefresh={fetchAgroWeather}
+                    loading={loading}
+                  />
+                </div>
 
-              {/* Quick Chat Entry in Dashboard */}
-              <AgentChat
-                profile={profile}
-                onSendMessage={handleSendMessage}
-                messages={messages}
-                loading={chatLoading}
-                latestTrace={latestTrace}
-                persona={persona}
-                provider={chatProvider}
+                {/* 3D Hero Scene (6 cols on lg) */}
+                <div className="col-span-12 lg:col-span-6">
+                  <HeroContainer riskData={riskData} />
+                </div>
+
+                {/* Risk Overview Gauges (6 cols on lg) */}
+                <div className="col-span-12 lg:col-span-6">
+                  <RiskOverview riskData={riskData} />
+                </div>
+
+                {/* Advisory Checklist & Spray Window (12 cols) */}
+                <div className="col-span-12">
+                  <AdvisoryCard
+                    advisory={advisory}
+                    checklist={checklist}
+                    sprayWindow={sprayWindow}
+                  />
+                </div>
+
+                {/* 7-Day Weather Forecast & Current Weather (12 cols) */}
+                <div className="col-span-12">
+                  <WeatherSummary weatherData={weatherData} />
+                </div>
+
+                {/* SMS Farm Brief Card (12 cols) */}
+                <div className="col-span-12">
+                  <FarmBriefCard farmBrief={farmBrief} />
+                </div>
+              </div>
+
+              {/* 4. Agent Guidance Card at Bottom with Voice Readout */}
+              <AgentGuidanceCard
+                title={t('farmBrief.title')}
+                explanationText={lang === 'ta' ? (farmBrief.brief_ta || farmBrief.brief_en) : (farmBrief.brief_en || farmBrief.brief_ta)}
               />
             </motion.div>
           )}
@@ -348,6 +447,7 @@ function MainApp() {
                 latestTrace={latestTrace}
                 persona={persona}
                 provider={chatProvider}
+                onClearChat={() => setMessages([])}
               />
             </motion.div>
           )}

@@ -12,7 +12,7 @@
   "nav": {
     "home": "Home",
     "dashboard": "Home",
-    "irrigation": "Irrigation Plan",
+    "irrigation": "Irrigation",
     "whatif": "What If?",
     "safetyPlan": "Safety Plan",
     "nearbyHelp": "Nearby Help",
@@ -34,11 +34,11 @@
     "title": "7-Day Smart Irrigation Schedule",
     "subtitle": "Computed deterministically from Open-Meteo ET0 (evaporative demand) and forecast rain",
     "chartTitle": "Daily Evaporative Loss (ET0) vs Forecast Rainfall",
-    "chartLegendEt0": "Water Loss (ET0 mm)",
-    "chartLegendRain": "Rainfall (mm)",
+    "chartLegendEt0": "Water Demand (ET0 mm)",
+    "chartLegendRain": "Forecast Rain (mm)",
     "et0": "Evapotranspiration (ET0)",
     "rain": "Forecast Rain",
-    "deficit": "Net Moisture Deficit",
+    "deficit": "Deficit",
     "totalEt0": "Total Water Demand",
     "totalRain": "Total Expected Rain",
     "daysSummary": "7-Day Summary",
@@ -47,6 +47,26 @@
       "irrigate": "Normal Irrigation",
       "light": "Light Irrigation",
       "skip": "Skip Irrigation"
+    },
+    "heroTodayIrrigate": "Today: Normal Irrigation",
+    "heroTodaySkip": "Today: Skip Irrigation, Rain Expected",
+    "heroTodayLight": "Today: Light Irrigation",
+    "waterDemand": "Water Demand (ET0)",
+    "waterDemandDesc": "FAO-56 Evaporative Demand",
+    "forecastRain": "Forecast Rain",
+    "forecastRainDesc": "Expected 7-Day Rainfall",
+    "waterBalance": "Water Balance",
+    "surplus": "Surplus",
+    "surplusDesc": "Net Moisture Surplus",
+    "deficitDesc": "Net Moisture Deficit",
+    "chartYAxis": "Water Depth (mm)",
+    "sevenDayRowTitle": "7-Day Irrigation Schedule",
+    "unitMm": "mm",
+    "todayBadge": "Today",
+    "shortActions": {
+      "irrigate": "Irrigate",
+      "light": "Light",
+      "skip": "Skip"
     }
   },
   "whatif": {
@@ -104,9 +124,11 @@
     "light": "Light Mode"
   },
   "provider": {
-    "live": "Live agent (Strands)",
-    "mock": "Mock mode",
-    "status": "System Status"
+    "live": "Live",
+    "mock": "Mock",
+    "status": "System Status",
+    "liveLong": "Live agent (Gemini)",
+    "mockLong": "Mock mode"
   },
   "hero3d": {
     "title": "Today's Agro-Climatic Outlook",
@@ -269,7 +291,10 @@
     "caution": "Caution (Moderate Wind / Rain Risk)",
     "unsafe": "Do Not Spray (High Wind / Heavy Rain)",
     "windCondition": "Wind Speed",
-    "rainCondition": "Rain Probability"
+    "rainCondition": "Rain Probability",
+    "safeShort": "Safe",
+    "cautionShort": "Caution",
+    "unsafeShort": "Unsafe"
   },
   "audio": {
     "listenTamil": "Listen Aloud in Tamil",
@@ -369,5 +394,22 @@
     "nearestShelter": "Nearest Regulated Market Yard / Cyclone Shelter",
     "contact": "Kisan Call Centre Helpline",
     "phone": "1800-180-1551 (Toll-Free Kisan Call Centre)"
+  },
+  "heroDecision": {
+    "homeTitle": "Today's Farm Action Verdict",
+    "homeVerdict": "Maintain 2-3 cm Shallow Standing Water",
+    "homeReason": "Low overall hazard with favorable foliar spray window. Keep field drainage clear.",
+    "irrigationTitle": "Today's Irrigation Decision",
+    "whatifTitle": "Hypothetical Scenario Verdict",
+    "chatTitle": "Agro-Climatic Intelligence Verdict",
+    "impactTitle": "Advisory Accuracy & Ground Truth Verdict"
+  },
+  "guidance": {
+    "title": "Agent Guidance",
+    "subtitle": "Interactive Agromet Decision Support",
+    "listen": "Listen",
+    "stop": "Stop",
+    "playing": "Playing Audio...",
+    "unsupported": "Voice synthesis not supported in this browser"
   }
 }
