@@ -45,7 +45,8 @@ class ClimateGuardOrchestrator:
             self.live_reason = "mock mode explicitly enabled via MOCK_MODE=true in backend/.env"
             return
 
-        provider = settings.model_provider.strip().lower()
+        provider = os.environ.get("MODEL_PROVIDER", settings.model_provider).strip().lower()
+        self.provider = provider
 
         if provider == "google":
             api_key = settings.google_api_key.strip()
@@ -98,7 +99,7 @@ class ClimateGuardOrchestrator:
                 self.live_reason = f"exception during Gemini model initialization: {e}"
 
         elif provider == "bedrock":
-            aws_key = os.getenv("AWS_ACCESS_KEY_ID")
+            aws_key = os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("AWS_SESSION_TOKEN")
             aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
             if not (aws_key and aws_secret):
                 self.is_live = False
@@ -168,6 +169,9 @@ class ClimateGuardOrchestrator:
         Executes query through Strands agent or graceful fallback.
         Returns: (response_text, AgentTrace, is_live_call)
         """
+        current_provider = os.environ.get("MODEL_PROVIDER", settings.model_provider).strip().lower()
+        if self.provider != current_provider:
+            self._initialize_provider()
         session = self.get_or_create_session(session_id, district, crop, growth_stage)
         tool_traces = []
 

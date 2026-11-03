@@ -8,12 +8,28 @@ across runs on disk, fulfilling the pattern in kit/blocks/b08_sessions.py.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Optional, Dict, Any
 
 from strands.session import FileSessionManager
 
-DEFAULT_STORAGE_DIR = Path(__file__).parent / ".sessions"
+
+def _default_storage_dir() -> Path:
+    if "AGENT_SESSION_DIR" in os.environ:
+        return Path(os.environ["AGENT_SESSION_DIR"])
+    # In Linux/container environments (e.g. Bedrock AgentCore), /tmp is the writable storage
+    if os.name != "nt" and Path("/tmp").exists():
+        tmp_dir = Path("/tmp/climateguard_sessions")
+        try:
+            tmp_dir.mkdir(parents=True, exist_ok=True)
+            return tmp_dir
+        except Exception:
+            pass
+    return Path(__file__).parent / ".sessions"
+
+
+DEFAULT_STORAGE_DIR = _default_storage_dir()
 
 
 def get_session_manager(
