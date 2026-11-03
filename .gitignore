@@ -39,3 +39,8 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+
+# Agent local sessions and external references
+.sessions/
+backend/agent/.sessions/
+strands-ship-main/

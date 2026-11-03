@@ -231,7 +231,7 @@ class ClimateGuardOrchestrator:
         t0 = time.time()
         forecast_raw = get_forecast(session["district"])
         t1 = time.time()
-        forecast_data = json.loads(forecast_raw)
+        forecast_data = forecast_raw if isinstance(forecast_raw, dict) else json.loads(forecast_raw)
         tool_traces.append(ToolCallTrace(
             name="get_forecast",
             status="SUCCESS",
@@ -244,7 +244,7 @@ class ClimateGuardOrchestrator:
         t2 = time.time()
         risk_raw = assess_risk(session["district"], session["crop"], session["growth_stage"])
         t3 = time.time()
-        risk_data = json.loads(risk_raw)
+        risk_data = risk_raw if isinstance(risk_raw, dict) else json.loads(risk_raw)
         tool_traces.append(ToolCallTrace(
             name="assess_risk",
             status="SUCCESS",
@@ -267,7 +267,7 @@ class ClimateGuardOrchestrator:
         # Tool 3: crop_advice
         t4 = time.time()
         advice_raw = crop_advice(session["crop"], session["growth_stage"], risk_data["composite_risk"])
-        advice_data = json.loads(advice_raw)
+        advice_data = advice_raw if isinstance(advice_raw, (dict, list)) else json.loads(advice_raw)
         t5 = time.time()
         tool_traces.append(ToolCallTrace(
             name="crop_advice",
@@ -286,7 +286,7 @@ class ClimateGuardOrchestrator:
             language=target_lang
         )
         t7 = time.time()
-        brief_data = json.loads(brief_raw)
+        brief_data = brief_raw if isinstance(brief_raw, dict) else json.loads(brief_raw)
         tool_traces.append(ToolCallTrace(
             name="daily_farm_brief",
             status="SUCCESS",

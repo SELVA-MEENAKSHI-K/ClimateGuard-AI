@@ -1,0 +1,96 @@
+{
+  "version": "2026-10-25",
+  "note": "Authoritative agronomic guidance from TNAU Agritech Portal, IMD Chennai, FAO-56, and TNSDMA. Every item contains id, text, source_url, and date_read.",
+  "sources": {
+    "TNAU-AGRI": "Tamil Nadu Agricultural University (TNAU) Agritech Portal, Crop Production Guides, https://agritech.tnau.ac.in/agriculture/agri_crop_production.html",
+    "TNAU-AGROMET": "TNAU Agricultural Meteorology Advisory Service, https://agritech.tnau.ac.in/agromet/",
+    "TNAU-CROP-PROT": "TNAU Crop Protection Compendium, https://agritech.tnau.ac.in/crop_protection/",
+    "TNAU-HORTI": "TNAU Horticulture Directory, Banana and Fruit Cultivation, https://agritech.tnau.ac.in/horticulture/",
+    "TNAU-DRYLAND": "TNAU Dryland Farming and Soil Moisture Conservation, https://agritech.tnau.ac.in/agriculture/agri_resource_mgt_soil_water_consv.html",
+    "FAO-56": "Food and Agriculture Organization (FAO) Irrigation and Drainage Paper No. 56: Crop Evapotranspiration, https://www.fao.org/land-water/databases-and-software/cropwat/",
+    "IMD-CHENNAI": "India Meteorological Department, Regional Meteorological Centre Chennai, https://mausam.imd.gov.in/chennai/",
+    "TNSDMA-DISASTER": "Tamil Nadu State Disaster Management Authority (TNSDMA), Emergency Helplines and Standard Operating Procedures, https://tnsdma.tn.gov.in/"
+  },
+  "items": [
+    {
+      "id": "G-TNAU-DRAIN-01",
+      "topic": "heavy_rain",
+      "crop": "paddy",
+      "text": "In paddy nursery and vegetative fields, drain excess standing water within 24 hours of heavy rainfall (>50 mm) to prevent seedling submergence and sheath blight.",
+      "source_url": "https://agritech.tnau.ac.in/agriculture/agri_crop_production.html",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-TNAU-HEAT-02",
+      "topic": "heat",
+      "crop": "general",
+      "text": "During extreme heat (>37 C) or IMD heatwave alert, suspend midday irrigation between 11:00 AM and 3:30 PM to avoid root zone thermal scald. Apply light irrigation in early morning or after 5:00 PM.",
+      "source_url": "https://agritech.tnau.ac.in/agromet/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-TNAU-SPRAY-03",
+      "topic": "spray_window",
+      "crop": "general",
+      "text": "Foliar nutrition or protective organic spray is safe only when wind speed is under 15 km/h and rain probability is below 40%. Never spray during gusty winds, heavy cloud buildup, or intense midday sun.",
+      "source_url": "https://agritech.tnau.ac.in/crop_protection/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-TNAU-BANANA-04",
+      "topic": "wind",
+      "crop": "banana",
+      "text": "For bunch-bearing or mature banana plants, install double bamboo or casuarina propping stakes when wind speeds exceed 30 km/h to prevent trunk snapping and lodging.",
+      "source_url": "https://agritech.tnau.ac.in/horticulture/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-FAO56-IRRIG-05",
+      "topic": "irrigation",
+      "crop": "general",
+      "text": "Calculate daily crop irrigation demand using FAO-56 Penman-Monteith evaporative loss (ET0). Subtract 7-day forecast rainfall. If rainfall exceeds ET0 demand, skip irrigation to avoid waterlogging and root rot.",
+      "source_url": "https://www.fao.org/land-water/databases-and-software/cropwat/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-TNAU-DRY-06",
+      "topic": "drought",
+      "crop": "general",
+      "text": "During dry spells exceeding 7 days, apply straw, dried leaves, or coir pith mulching to 5-8 cm depth around crop root zones to arrest evaporative moisture loss.",
+      "source_url": "https://agritech.tnau.ac.in/agriculture/agri_resource_mgt_soil_water_consv.html",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-IMD-ALERT-07",
+      "topic": "imd_priority",
+      "crop": "general",
+      "text": "Official IMD Red or Orange alerts take statutory priority over local farm schedules. When Red Alert is active for extreme downpour (>204.4 mm) or cyclonic storm, suspend all field work immediately.",
+      "source_url": "https://mausam.imd.gov.in/chennai/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-DISASTER-1077",
+      "topic": "emergency",
+      "crop": "general",
+      "text": "In life-threatening flood inundation, storm landfall, or lightning danger, evacuate to designated district cyclone shelters and call District Disaster Management at 1077 or State Emergency at 112 / 108.",
+      "source_url": "https://tnsdma.tn.gov.in/",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-GROUNDNUT-08",
+      "topic": "heavy_rain",
+      "crop": "groundnut",
+      "text": "In groundnut fields, dig cross-drainage channels to prevent water stagnation in the root and pod zone, reducing susceptibility to collar rot and Aspergillus fungal decay.",
+      "source_url": "https://agritech.tnau.ac.in/agriculture/agri_crop_production.html",
+      "date_read": "2026-10-25"
+    },
+    {
+      "id": "G-SUGARCANE-09",
+      "topic": "wind",
+      "crop": "sugarcane",
+      "text": "In sugarcane at 5-7 months stage, perform detrashing and earthing-up before heavy monsoon gales to support anchorage and enable rapid storm water outflow.",
+      "source_url": "https://agritech.tnau.ac.in/agriculture/agri_crop_production.html",
+      "date_read": "2026-10-25"
+    }
+  ]
+}

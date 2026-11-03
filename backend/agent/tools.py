@@ -1,24 +1,84 @@
 """
 backend/agent/tools.py
 
-Tool functions for Strands Agents SDK.
+Tool definitions for ClimateGuard AI using Strands Agents SDK.
 Rule: The LLM NEVER computes risk. assess_risk invokes the deterministic
 Python risk engine in backend/config/thresholds.py.
+
+Tools provided:
+  - @tool get_forecast: Open-Meteo live observation and 7-day forecast
+  - @tool assess_risk: Deterministic agromet evaluation (calls backend/config/thresholds.py)
+  - @tool crop_advice: Reads backend/agent/data/guidance.json (every item has id, text, source_url, date_read)
+  - @tool find_shelters: Emergency market yards and relief shelters
+  - @tool daily_farm_brief: SMS-style daily brief
 """
+from __future__ import annotations
 
 import json
-from typing import Dict, Any
+import os
+import re
+from functools import lru_cache
+from pathlib import Path
+from typing import Dict, Any, List
 
 try:
     from strands import tool
 except ImportError:
-    # Graceful decorator fallback if strands is imported dynamically
     def tool(func):
         return func
 
-from backend.data.locations import get_district_info, TAMIL_NADU_DISTRICTS
-from backend.services.weather_service import WeatherService
-from backend.services.risk_engine import RiskEngine
+try:
+    from backend.data.locations import get_district_info, TAMIL_NADU_DISTRICTS
+    from backend.services.weather_service import WeatherService
+    from backend.services.risk_engine import RiskEngine
+except (ModuleNotFoundError, ImportError):
+    try:
+        from data.locations import get_district_info, TAMIL_NADU_DISTRICTS
+        from services.weather_service import WeatherService
+        from services.risk_engine import RiskEngine
+    except (ModuleNotFoundError, ImportError):
+        # Fallback if neither is on path yet
+        import sys
+        backend_dir = Path(__file__).resolve().parent.parent
+        project_root = backend_dir.parent
+        for p in (str(backend_dir), str(project_root)):
+            if p not in sys.path:
+                sys.path.insert(0, p)
+        try:
+            from backend.data.locations import get_district_info, TAMIL_NADU_DISTRICTS
+            from backend.services.weather_service import WeatherService
+            from backend.services.risk_engine import RiskEngine
+        except (ModuleNotFoundError, ImportError):
+            from data.locations import get_district_info, TAMIL_NADU_DISTRICTS
+            from services.weather_service import WeatherService
+            from services.risk_engine import RiskEngine
+
+DATA_DIR = Path(__file__).parent / "data"
+TAMIL_REGEX = re.compile(r"[\u0B80-\u0BFF]")
+
+
+@lru_cache(maxsize=1)
+def guidance() -> dict:
+    """Loads authoritative agronomic guidance from backend/agent/data/guidance.json."""
+    guidance_file = DATA_DIR / "guidance.json"
+    if not guidance_file.exists():
+        return {"items": []}
+    return json.loads(guidance_file.read_text(encoding="utf-8"))
+
+
+def guidance_ids() -> set[str]:
+    """Returns all verified guidance IDs from guidance.json."""
+    return {item["id"] for item in guidance().get("items", [])}
+
+
+def language_of(text: str) -> str:
+    """Returns 'ta' if the text contains Tamil characters, otherwise 'en'."""
+    return "ta" if TAMIL_REGEX.search(text or "") else "en"
+
+
+def has_tamil(text: str) -> bool:
+    """Checks whether the text contains any Tamil script glyphs."""
+    return bool(TAMIL_REGEX.search(text or ""))
 
 
 # Emergency shelters and regulated market yards in Tamil Nadu
@@ -51,21 +111,20 @@ SHELTER_DATABASE = {
 
 
 @tool
-def get_forecast(district: str) -> str:
+def get_forecast(district: str = "Madurai") -> dict:
     """
     Fetches real-time weather observation and 7-day forecast for any Tamil Nadu district.
     Args:
-        district: Name of the Tamil Nadu district (e.g. Madurai, Thanjavur).
+        district: Name of the Tamil Nadu district (e.g. Madurai, Thanjavur, Cuddalore).
     Returns:
-        JSON string of current weather and 7-day forecast.
+        Dictionary containing current observation and 7-day daily forecast metrics.
     """
     dist_info = get_district_info(district)
     lat = dist_info["latitude"]
     lon = dist_info["longitude"]
 
     forecast = WeatherService.get_forecast_sync(lat, lon)
-
-    return json.dumps({
+    return {
         "district": district,
         "current": forecast.get("current", {}),
         "today_daily": {
@@ -74,13 +133,24 @@ def get_forecast(district: str) -> str:
             "rain_sum": forecast.get("daily", {}).get("precipitation_sum", [0.0])[0],
             "rain_prob": forecast.get("daily", {}).get("precipitation_probability_max", [20])[0],
             "wind_max": forecast.get("daily", {}).get("wind_speed_10m_max", [12.0])[0],
+            "et0": forecast.get("daily", {}).get("et0_fao_evapotranspiration", [4.0])[0],
         },
         "daily": forecast.get("daily", {})
-    })
+    }
+
+
+def assess_risk_dict(district: str = "Madurai", crop: str = "paddy", growth_stage: str = "vegetative") -> dict:
+    """
+    Internal helper that executes deterministic risk computation via RiskEngine and thresholds.py.
+    """
+    dist_info = get_district_info(district)
+    full_weather = WeatherService.get_forecast_sync(dist_info["latitude"], dist_info["longitude"])
+    full_weather["district"] = district
+    return RiskEngine.assess(full_weather, crop=crop, growth_stage=growth_stage)
 
 
 @tool
-def assess_risk(district: str, crop: str = "paddy", growth_stage: str = "vegetative") -> str:
+def assess_risk(district: str = "Madurai", crop: str = "paddy", growth_stage: str = "vegetative") -> dict:
     """
     Deterministically computes hazard levels (Heat, Rain, Drought, Wind) and spray windows.
     IMPORTANT: The LLM does NOT determine risk. It delegates to thresholds.py rules.
@@ -89,13 +159,10 @@ def assess_risk(district: str, crop: str = "paddy", growth_stage: str = "vegetat
         crop: Agricultural crop (e.g. paddy, banana, groundnut, sugarcane, cotton).
         growth_stage: Current stage (sowing, vegetative, flowering, harvest).
     Returns:
-        JSON string containing deterministic risk levels, spray window, and metrics.
+        Dictionary containing deterministic risk levels, spray window, and metrics.
     """
-    dist_info = get_district_info(district)
-    full_weather = WeatherService.get_forecast_sync(dist_info["latitude"], dist_info["longitude"])
-
-    risk_eval = RiskEngine.assess(full_weather, crop=crop, growth_stage=growth_stage)
-    return json.dumps({
+    risk_eval = assess_risk_dict(district, crop, growth_stage)
+    return {
         "district": district,
         "crop": crop,
         "growth_stage": growth_stage,
@@ -112,11 +179,67 @@ def assess_risk(district: str, crop: str = "paddy", growth_stage: str = "vegetat
         "confidence": risk_eval.get("confidence", {}),
         "farm_brief": risk_eval.get("farm_brief", {}),
         "metrics": risk_eval["metrics"]
-    })
+    }
 
 
 @tool
-def daily_farm_brief(district: str = "Madurai", crop: str = "paddy", growth_stage: str = "vegetative", language: str = "en") -> str:
+def crop_advice(crop: str = "paddy", growth_stage: str = "vegetative", risk_level: str = "LOW") -> list[dict]:
+    """
+    Reads authoritative crop guidance from backend/agent/data/guidance.json.
+    Every item returned contains id, text, source_url, and date_read.
+    Rule: NO pesticide chemical names or dosages; only agromet safeguards.
+    Args:
+        crop: Crop name (e.g. paddy, banana, groundnut, sugarcane, cotton).
+        growth_stage: Current stage (sowing, vegetative, flowering, harvest).
+        risk_level: Computed composite risk (LOW, MODERATE, HIGH, CRITICAL).
+    Returns:
+        List of curated guidance dictionaries backed by authoritative sources.
+    """
+    all_items = guidance().get("items", [])
+    crop_lower = crop.lower()
+
+    # Prioritize guidance matching crop or general, and relevant hazards
+    matched = []
+    for item in all_items:
+        item_crop = item.get("crop", "general").lower()
+        if item_crop == "general" or item_crop == crop_lower:
+            matched.append({
+                "id": item["id"],
+                "text": item["text"],
+                "source_url": item["source_url"],
+                "date_read": item["date_read"]
+            })
+
+    # Return top 4 most pertinent guidance items
+    return matched[:4] if matched else all_items[:3]
+
+
+@tool
+def find_shelters(district: str = "Madurai") -> dict:
+    """
+    Locates emergency crop storage, regulated market yards, and disaster shelters for a Tamil Nadu district.
+    Args:
+        district: District name in Tamil Nadu.
+    Returns:
+        Dictionary containing nearest market yard, disaster shelter, and helpline numbers.
+    """
+    shelter_info = SHELTER_DATABASE.get(district, {
+        "market_yard": f"{district} Central Regulated Market Yard & Storage Warehouse",
+        "shelter": f"{district} Multi-Hazard Disaster Relief Center",
+        "agri_officer_phone": "044-28521500 (TN Agriculture Directorate)",
+        "kisan_call_center": "1800-180-1551"
+    })
+
+    return {
+        "district": district,
+        "details": shelter_info,
+        "helpline": "1800-180-1551 (Toll-Free Kisan Call Centre)",
+        "state_disaster_helpline": "1077 (Disaster Control Room)"
+    }
+
+
+@tool
+def daily_farm_brief(district: str = "Madurai", crop: str = "paddy", growth_stage: str = "vegetative", language: str = "en") -> dict:
     """
     Produces a short farm brief (strictly max 300 characters) in English or Tamil,
     covering the top risk, one concrete action for today, and one thing to avoid.
@@ -126,17 +249,13 @@ def daily_farm_brief(district: str = "Madurai", crop: str = "paddy", growth_stag
         growth_stage: Current stage (sowing, vegetative, flowering, harvest).
         language: Language code ('en' or 'ta').
     Returns:
-        JSON string containing the SMS brief (max 300 chars), top risk, action today, and thing to avoid.
+        Dictionary containing the brief, top risk, action today, and thing to avoid.
     """
-    dist_info = get_district_info(district)
-    full_weather = WeatherService.get_forecast_sync(dist_info["latitude"], dist_info["longitude"])
-
-    full_weather["district"] = district
-    risk_eval = RiskEngine.assess(full_weather, crop=crop, growth_stage=growth_stage)
+    risk_eval = assess_risk_dict(district, crop, growth_stage)
     brief = risk_eval.get("farm_brief", {})
 
     selected_brief = brief.get("brief_ta" if language == "ta" else "brief_en", "")
-    return json.dumps({
+    return {
         "district": district,
         "crop": crop,
         "language": language,
@@ -147,83 +266,4 @@ def daily_farm_brief(district: str = "Madurai", crop: str = "paddy", growth_stag
         "action_today": brief.get("action_today_ta" if language == "ta" else "action_today_en", ""),
         "avoid_today": brief.get("avoid_today_ta" if language == "ta" else "avoid_today_en", ""),
         "char_count": len(selected_brief)
-    })
-
-
-@tool
-def crop_advice(crop: str, growth_stage: str, risk_level: str) -> str:
-    """
-    Generates actionable farm safeguards for a given crop and growth stage under specific weather risk.
-    Rule: NO pesticide chemical names or dosages; only weather-based irrigation and cultural safeguards.
-    Args:
-        crop: Crop name.
-        growth_stage: Current growth stage.
-        risk_level: Computed composite risk (LOW, MODERATE, HIGH, CRITICAL).
-    Returns:
-        Actionable recommendations in English and Tamil.
-    """
-    crop_lower = crop.lower()
-    advice_en = []
-    advice_ta = []
-
-    if crop_lower == "paddy":
-        if risk_level in ("HIGH", "CRITICAL"):
-            advice_en.append("Drain excess water from field nursery immediately to prevent submergence injury.")
-            advice_en.append("Withhold chemical fertilizer application until field waters recede.")
-            advice_ta.append("நாற்றங்கால் வயல்களில் நீர் தேங்காமல் உடனடியாக வடிகால் வாய்க்கால்களை திறந்துவிடவும்.")
-            advice_ta.append("வெள்ளநீர் வடியும் வரை ரசாயன உரங்களை இடுவதை முழுமையாக தவிர்க்கவும்.")
-        else:
-            advice_en.append("Maintain 2 to 3 cm shallow standing water for vegetative paddy.")
-            advice_ta.append("தழைப்பருவ நெற்பயிருக்கு 2 முதல் 3 செ.மீ அளவு சீரான நீர்மட்டம் இருக்குமாறு பராமரிக்கவும்.")
-
-    elif crop_lower == "banana":
-        if risk_level in ("HIGH", "CRITICAL"):
-            advice_en.append("Provide bamboo or casuarina propping support for tall and bunch-bearing banana plants to prevent lodging.")
-            advice_ta.append("காற்றினால் மரம் சாயாமல் இருக்க சவுக்கு அல்லது மூங்கில் கழி கொண்டு முட்டுக் கொடுக்கவும்.")
-        else:
-            advice_en.append("Regular trench irrigation and check bunch propping ties.")
-            advice_ta.append("வழக்கமான பாசனத்தை மேற்கொண்டு வாழை மர முட்டு கம்புகளை சரிபார்க்கவும்.")
-
-    elif crop_lower == "groundnut":
-        if risk_level in ("HIGH", "CRITICAL"):
-            advice_en.append("Provide cross-drainage channels in groundnut beds to prevent collar rot and pod decay.")
-            advice_ta.append("நிலக்கடலை பாத்திகளில் நீர் தேங்காமல் இருக்க குறுக்கு வடிகால்களை வெட்டவும்.")
-        else:
-            advice_en.append("Maintain adequate soil moisture during pod development stage.")
-            advice_ta.append("காய் பிடிக்கும் பருவத்தில் நிலத்தில் உகந்த ஈரப்பதம் இருக்குமாறு பாசனம் செய்யவும்.")
-
-    else:
-        advice_en.append(f"Ensure field drainage channels are clear and monitor {crop} root zone moisture.")
-        advice_ta.append(f"வயல் வடிகால்களை தூர்வாரி {crop} பயிர் வேர் பகுதியில் ஈரப்பதத்தை கண்காணிக்கவும்.")
-
-    return json.dumps({
-        "crop": crop,
-        "growth_stage": growth_stage,
-        "risk_level": risk_level,
-        "safeguards_en": advice_en,
-        "safeguards_ta": advice_ta
-    })
-
-
-@tool
-def find_shelters(district: str) -> str:
-    """
-    Locates emergency crop storage, regulated market yards, and disaster shelters for a Tamil Nadu district.
-    Args:
-        district: District name in Tamil Nadu.
-    Returns:
-        JSON string containing nearest market yard, disaster shelter, and helpline numbers.
-    """
-    shelter_info = SHELTER_DATABASE.get(district, {
-        "market_yard": f"{district} Central Regulated Market Yard & Storage Warehouse",
-        "shelter": f"{district} Multi-Hazard Disaster Relief Center",
-        "agri_officer_phone": "044-28521500 (TN Agriculture Directorate)",
-        "kisan_call_center": "1800-180-1551"
-    })
-
-    return json.dumps({
-        "district": district,
-        "details": shelter_info,
-        "helpline": "1800-180-1551 (Toll-Free Kisan Call Centre)",
-        "state_disaster_helpline": "1077 (Disaster Control Room)"
-    })
+    }
